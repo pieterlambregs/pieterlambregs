@@ -135,8 +135,13 @@ function MetaBar({ project, onChange }: { project: Project; onChange: (p: Projec
       />
     </label>
   );
+  const [open, setOpen] = useState(false);
   return (
-    <div className="metabar">
+    <>
+    <button className="metabar-toggle" onClick={() => setOpen(!open)}>
+      {open ? "▴" : "▾"} File info: {m.product || project.filename}
+    </button>
+    <div className={open ? "metabar" : "metabar collapsed"}>
       {field("date_code", "Date code", 60)}
       {field("brand", "Brand", 60)}
       {field("product", "Product", 160)}
@@ -159,6 +164,7 @@ function MetaBar({ project, onChange }: { project: Project; onChange: (p: Projec
         {project.filename}
       </span>
     </div>
+    </>
   );
 }
 

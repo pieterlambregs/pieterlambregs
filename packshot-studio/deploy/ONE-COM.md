@@ -92,3 +92,16 @@ C="docker compose -f docker-compose.yml -f deploy/docker-compose.server.yml"
 * **Back-up**: projecten en renders staan op de VPS (Docker-volume `packshot-data`).
   Neem in het one.com-paneel snapshots/back-ups van de VPS als dat in je pakket zit.
 * one.com geeft zelf geen ondersteuning op Docker-installaties.
+
+## Op je iPhone
+
+Open **https://packshot.artlab-media.be** in Safari en log in. Als icoon op je beginscherm:
+tik op het deelknopje (vierkant met pijl) → **Zet op beginscherm**. De app opent dan
+schermvullend, zonder Safari-balken.
+
+* De menubalk bovenaan kun je horizontaal vegen.
+* Bestanden uploaden: *Upload* → kies de PDF uit de app Bestanden (iCloud, Dropbox, e-mailbijlage
+  eerst bewaren in Bestanden).
+* Een render bewaren: tik op PNG of JPG → deelknop → **Bewaar afbeelding** (komt in Foto's) of
+  **Bewaar in Bestanden**.
+* Vouwlijnen verslepen werkt met je vinger, maar op een computerscherm is dat preciezer.

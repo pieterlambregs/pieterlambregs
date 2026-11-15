@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { api, LibraryItem, Options, Project, Scene } from "./api";
 import Preview3D from "./Preview3D";
 
@@ -23,6 +23,15 @@ export default function SceneSetup({ project, options, library, onChange, onRend
   const [presets, setPresets] = useState<{ last: Scene; named: Record<string, Scene> } | null>(null);
   const [previewView, setPreviewView] = useState("three_quarter_left");
   const [groupProjects, setGroupProjects] = useState<Project[]>([]);
+  const colRef = useRef<HTMLDivElement>(null);
+  const [colW, setColW] = useState(520);
+  useEffect(() => {
+    const el = colRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setColW(Math.floor(el.clientWidth)));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   useEffect(() => {
     api.presets().then((p) => {
@@ -61,7 +70,7 @@ export default function SceneSetup({ project, options, library, onChange, onRend
 
   return (
     <div className="scene">
-      <div className="preview-col">
+      <div className="preview-col" ref={colRef}>
         <div className="row">
           {Object.entries(options.views).map(([k, label]) => (
             <button key={k} className={previewView === k ? "on" : ""} onClick={() => setPreviewView(k)}>
@@ -69,7 +78,7 @@ export default function SceneSetup({ project, options, library, onChange, onRend
             </button>
           ))}
         </div>
-        <Preview3D boxes={boxes} scene={scene} view={previewView} />
+        <Preview3D boxes={boxes} scene={scene} view={previewView} width={Math.max(200, Math.min(520, colW))} />
         <p className="muted">
           Live preview (WebGL). The final render is Cycles with calibrated studio light; framing and camera match this preview.
         </p>

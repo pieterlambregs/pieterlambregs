@@ -93,10 +93,30 @@ svg.sheet .panel { cursor: pointer; }
 .verify-img { max-width: 100%; border: 1px solid var(--line); }
 pre { white-space: pre-wrap; }
 
+.metabar-toggle { display: none; }
+@media (max-width: 700px) {
+  header { flex-wrap: wrap; gap: 8px; padding: 8px 10px; }
+  header nav { order: 3; width: 100%; overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
+  header nav button { white-space: nowrap; padding: 6px 8px; }
+  header .current { display: none; }
+  main { padding: 10px; }
+  .metabar-toggle { display: block; width: 100%; text-align: left; border-radius: 0; border-left: 0; border-right: 0; background: #fff; }
+  .metabar.collapsed { display: none; }
+  .metabar input { max-width: 100%; }
+  .library .grid { grid-template-columns: 1fr; }
+  .upload .drop { padding: 30px 16px; text-align: center; }
+  .output { display: block; }
+  .row { flex-wrap: wrap; }
+  .thumb-btn { padding: 4px; }
+  button, .button { min-height: 36px; }
+  .busy { left: 10px; right: 10px; bottom: 10px; text-align: center; }
+}
 @media (max-width: 1000px) {
-  .review, .scene, .renders, .output { grid-template-columns: 1fr; }
+  .review, .scene, .renders, .output { grid-template-columns: minmax(0, 1fr); }
+  .review > *, .scene > *, .renders > * { min-width: 0; }
   .side { position: static; max-height: none; }
 }
 .thumb-btn { display: inline-flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px; font-size: 12px; }
 .thumb-btn.on { background: #eef4ff; color: var(--ink); border-color: var(--accent); }
 .thumb { display: block; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+.tile span, .small, .muted, .card h3, button.block { overflow-wrap: anywhere; }
