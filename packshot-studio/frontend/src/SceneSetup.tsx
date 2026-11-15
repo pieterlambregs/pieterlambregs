@@ -104,6 +104,12 @@ export default function SceneSetup({ project, options, library, onChange, onRend
             Camera height {scene.elevation ?? "preset"}°
             <input type="range" min={0} max={45} value={scene.elevation ?? 10} onChange={(e) => set("elevation", Number(e.target.value))} />
           </label>
+          {(scene.views.includes("front_top") || previewView === "front_top") && (
+            <label>
+              Front-top: camera height {scene.front_top_elevation ?? 15}° (how much of the top shows)
+              <input type="range" min={5} max={40} value={scene.front_top_elevation ?? 15} onChange={(e) => set("front_top_elevation", Number(e.target.value))} />
+            </label>
+          )}
           <label>
             Lens {scene.focal} mm
             <input type="range" min={85} max={135} step={5} value={scene.focal} onChange={(e) => set("focal", Number(e.target.value))} />

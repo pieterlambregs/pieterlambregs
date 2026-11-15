@@ -48,6 +48,7 @@ export type Scene = {
   views: string[];
   azimuth: number | null;
   elevation: number | null;
+  front_top_elevation: number;
   focal: number;
   fill: number;
   anchor: [number, number];

@@ -23,15 +23,16 @@ VIEWS = {
     "three_quarter_left": (35.0, 10.0),
     "three_quarter_right": (-35.0, 10.0),
     "front": (0.0, 0.0),
+    "front_top": (0.0, 15.0),  # straight front, camera raised: front undistorted, top visible
     "top_down": (0.0, 90.0),
     "hero": (28.0, 24.0),
 }
-VIEW_LABELS = {"three_quarter_left": "34-left", "three_quarter_right": "34-right", "front": "front",
+VIEW_LABELS = {"three_quarter_left": "34-left", "three_quarter_right": "34-right", "front": "front", "front_top": "front-top",
                "top_down": "top-down", "hero": "hero"}
 
 DEFAULT_SCENE = {
     "views": ["three_quarter_left"],
-    "azimuth": None, "elevation": None, "focal": 100, "fill": 0.8, "anchor": [0.0, 0.0],
+    "azimuth": None, "elevation": None, "front_top_elevation": 15.0, "focal": 100, "fill": 0.8, "anchor": [0.0, 0.0],
     "finish": "matte", "shadow": True, "key_side": "auto", "front_gain": 0.93,
     "background": "transparent", "long_side": 2000, "aspect": "1:1", "custom_w": None, "custom_h": None,
     "formats": ["png", "jpg", "pdf"], "jpg_background": "#ffffff", "pdf_info_strip": True,
@@ -110,9 +111,11 @@ def box_spec(p: dict, finish: str) -> dict:
 
 def build_job(p: dict, scene: dict, view: str, out_png: Path, meta_json: Path) -> dict:
     az, el = VIEWS[view]
-    if scene.get("azimuth") is not None and view not in ("front", "top_down"):
+    if view == "front_top" and scene.get("front_top_elevation") is not None:
+        el = float(scene["front_top_elevation"])
+    if scene.get("azimuth") is not None and view not in ("front", "top_down", "front_top"):
         az = float(scene["azimuth"]) * (1 if az >= 0 else -1)
-    if scene.get("elevation") is not None and view not in ("front", "top_down"):
+    if scene.get("elevation") is not None and view not in ("front", "top_down", "front_top"):
         el = float(scene["elevation"])
     w, h = export.resolution(int(scene["long_side"]), scene["aspect"], scene.get("custom_w"), scene.get("custom_h"))
     boxes = [box_spec(p, scene["finish"])]

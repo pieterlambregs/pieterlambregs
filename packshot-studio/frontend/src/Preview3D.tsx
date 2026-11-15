@@ -6,6 +6,7 @@ const VIEWS: Record<string, [number, number]> = {
   three_quarter_left: [35, 10],
   three_quarter_right: [-35, 10],
   front: [0, 0],
+  front_top: [0, 15],
   top_down: [0, 90],
   hero: [28, 24],
 };
@@ -111,8 +112,9 @@ export default function Preview3D({ boxes, scene, view, width = 520 }: { boxes: 
 
     // camera: level (two-point perspective) + lens shift, fitted like the Blender renderer
     let [az, el2] = VIEWS[view] || VIEWS.three_quarter_left;
-    if (scene.azimuth != null && view !== "front" && view !== "top_down") az = Math.abs(scene.azimuth) * Math.sign(az || 1);
-    if (scene.elevation != null && view !== "front" && view !== "top_down") el2 = scene.elevation;
+    if (view === "front_top" && scene.front_top_elevation != null) el2 = scene.front_top_elevation;
+    if (scene.azimuth != null && view !== "front" && view !== "top_down" && view !== "front_top") az = Math.abs(scene.azimuth) * Math.sign(az || 1);
+    if (scene.elevation != null && view !== "front" && view !== "top_down" && view !== "front_top") el2 = scene.elevation;
     const azr = (az * Math.PI) / 180, elr = (el2 * Math.PI) / 180;
     const fovV = 2 * Math.atan(24 / 2 / scene.focal) * (180 / Math.PI);
     const cam = new THREE.PerspectiveCamera(fovV, aspect, 1, size * 200);
