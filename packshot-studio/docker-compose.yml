@@ -6,6 +6,9 @@ services:
     restart: unless-stopped
 
   api:
+    # Blender (bpy) only exists for Linux on Intel/AMD (x86_64). On a Mac with an Apple chip
+    # Docker Desktop runs this through Rosetta automatically.
+    platform: linux/amd64
     build: { context: ., dockerfile: backend/Dockerfile }
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000
     environment:
@@ -17,6 +20,7 @@ services:
 
   worker:
     # Renders run here (Blender Cycles, CPU). Scale with: docker compose up --scale worker=2
+    platform: linux/amd64
     build: { context: ., dockerfile: backend/Dockerfile }
     command: rq worker renders --url redis://redis:6379/0
     environment:
