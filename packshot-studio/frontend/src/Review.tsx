@@ -184,21 +184,56 @@ export default function Review({ project, options, library, onChange, onApproved
           </section>
         )}
 
-        {!layout.front_confirmed && (
-          <section className="card ask">
-            <h3>Which panel is the front?</h3>
-            <p className="muted">Proposed: ★ {layout.panels.find((p) => p.role === "front")?.id} ({layout.front_reason}).</p>
-            <button
-              onClick={() => {
-                const f = layout.panels.find((p) => p.role === "front");
-                if (f) makeFront(f);
-              }}
-            >
-              Yes, that is the front
-            </button>
-            <span className="muted"> or select another panel and press “Make front”.</span>
-          </section>
-        )}
+        {(() => {
+          const front = layout.panels.find((p) => p.role === "front");
+          const back = layout.panels.find((p) => p.role === "back");
+          if (!front) return null;
+          const fr = rectOf(layout, front);
+          const askOrientation = project.questions.some((q) => q.id === "orientation");
+          return (
+            <section className={!layout.front_confirmed || askOrientation ? "card ask" : "card"}>
+              <h3>Front and reading direction</h3>
+              <p className="muted small">{layout.front_reason}</p>
+              <p>Which panel is the front?</p>
+              <div className="row wrap">
+                {[front, back].filter(Boolean).map((p) => (
+                  <button
+                    key={p!.id}
+                    className={"thumb-btn" + (p!.role === "front" && layout.front_confirmed ? " on" : "")}
+                    onClick={() => makeFront(p!)}
+                    title={p!.role === "front" ? "Confirm this panel as the front" : "Use this panel as the front instead"}
+                  >
+                    <PanelThumb project={project} rect={rectOf(layout, p!)} rotation={p!.rotation} size={110} />
+                    <span>{p!.role === "front" ? "★ this is the front" : "no, this one"}</span>
+                  </button>
+                ))}
+              </div>
+              <p>Which way up does the front read? Click the one that is upright.</p>
+              <div className="row wrap">
+                {[0, 90, 180, 270].map((r) => {
+                  const rot = (front.rotation + r) % 360;
+                  return (
+                    <button
+                      key={r}
+                      className={"thumb-btn" + (r === 0 ? " on" : "")}
+                      onClick={() =>
+                        busy(async () => {
+                          let p = r === 0 ? project : await api.layout(project.id, { panels: [{ ...front, rotation: rot }] });
+                          if (askOrientation) p = await api.answer(project.id, "orientation", "ok");
+                          onChange(p);
+                        }, "Turning the box")
+                      }
+                    >
+                      <PanelThumb project={project} rect={fr} rotation={rot} size={90} />
+                      <span>{r === 0 ? "current" : `turn ${r}°`}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="muted small">Turning the front turns the whole box (a carton lying on its side gets its tuck ends left and right).</p>
+            </section>
+          );
+        })()}
 
         <section className="card">
           <h3>Scale check</h3>
@@ -387,5 +422,22 @@ export default function Review({ project, options, library, onChange, onApproved
         {dc.status === "mismatch" && !project.dims_choice && <p className="muted">Choose the right dimensions first.</p>}
       </aside>
     </div>
+  );
+}
+
+function PanelThumb({ project, rect, rotation, size }: { project: Project; rect: { x0: number; y0: number; x1: number; y1: number }; rotation: number; size: number }) {
+  const w = rect.x1 - rect.x0;
+  const h = rect.y1 - rect.y0;
+  const turned = rotation % 180 !== 0;
+  const [vw, vh] = turned ? [h, w] : [w, h];
+  const scale = size / Math.max(vw, vh);
+  return (
+    <svg width={vw * scale} height={vh * scale} viewBox={`${-vw / 2} ${-vh / 2} ${vw} ${vh}`} className="thumb">
+      <g transform={`rotate(${rotation})`}>
+        <svg x={-w / 2} y={-h / 2} width={w} height={h} viewBox={`${rect.x0} ${rect.y0} ${w} ${h}`}>
+          <image href={fileUrl(project.id, "sheet.png", project.created)} x={0} y={0} width={project.layout.page.w} height={project.layout.page.h} />
+        </svg>
+      </g>
+    </svg>
   );
 }

@@ -139,7 +139,19 @@ def _build_canonical(segs, cw, ch) -> dict:
 
     # Body top and bottom: the two long horizontal lines that bound a band crossed by the
     # most full-height vertical lines.
-    long_h = sorted([l for l in hl if l.length >= 0.55 * bw], key=lambda l: l.pos)
+    # A body edge may be interrupted (thumb notch, slot): pieces on the same line count
+    # together, spanning from the first to the last piece.
+    spans: list[MLine] = []
+    for l in sorted(hl, key=lambda l: l.pos):
+        if spans and abs(l.pos - spans[-1].pos) <= 0.6:
+            sp = spans[-1]
+            sp.a, sp.b = min(sp.a, l.a), max(sp.b, l.b)
+            sp.crease_len += l.crease_len
+            sp.cut_len += l.cut_len
+        else:
+            spans.append(MLine(l.pos, l.a, l.b, l.crease_len, l.cut_len))
+    long_h = sorted([l for l in spans if (l.b - l.a) >= 0.55 * bw and (l.crease_len + l.cut_len) >= 0.4 * bw],
+                    key=lambda l: l.pos)
     best = None
     for i in range(len(long_h)):
         for j in range(i + 1, len(long_h)):
@@ -152,7 +164,7 @@ def _build_canonical(segs, cw, ch) -> dict:
             cross = [v for v in vl if v.a <= t.pos + 1.2 and v.b >= b.pos - 1.2 and ov0 - 1.0 <= v.pos <= ov1 + 1.0]
             if len(cross) < 5:
                 continue
-            score = (len(cross), min(t.length, b.length))
+            score = (len(cross), min(t.crease_len + t.cut_len, b.crease_len + b.cut_len))
             if best is None or score > best[0]:
                 best = (score, t, b, cross)
     if best is None:

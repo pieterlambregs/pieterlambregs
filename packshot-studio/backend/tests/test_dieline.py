@@ -168,3 +168,27 @@ def test_box_lying_on_its_side(samples):
     layout["front_turn"] = 0
     dl.assign_roles(layout, layout["front_col"], keep_user=False)
     assert {p["id"]: (p["role"], p["rotation"]) for p in layout["panels"]} == before
+
+
+def test_body_edge_interrupted_by_thumb_notch(samples):
+    """A body fold line with a gap (thumb notch, slot) must still be found as the body edge."""
+    info = pi.inspect(str(samples["layered"]))
+    y_top = 109.5
+    segs = []
+    for x0, y0, x1, y1, kind, curve in (s.to_list() for s in info.segments):
+        if abs(y0 - y_top) < 0.05 and abs(y1 - y_top) < 0.05:
+            a, b = sorted((x0, x1))
+            for lo, hi in ((a, min(b, 60.0)), (max(a, 90.0), b)):  # cut a 30 mm gap out of the line
+                if hi - lo > 0.5:
+                    segs.append([lo, y0, hi, y1, kind, curve])
+            continue
+        segs.append([x0, y0, x1, y1, kind, curve])
+    layout = dl.build_layout(segs, info.page_w_mm, info.page_h_mm)
+    m = dl.measure(layout)
+    assert m["box"] == pytest.approx({"width": 69.5, "depth": 69.5, "height": 108.5}, abs=0.05)
+
+
+def test_zones_and_pasting_are_technical():
+    for n in ("Pasting", "Braille zone", "Text & Barcode zone", "Caption", "Varnish Free Area"):
+        assert pi.classify_name(n) == "technical", n
+    assert pi.classify_name("Print elements") == "ask"

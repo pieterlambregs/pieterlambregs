@@ -25,6 +25,7 @@ _ROLE_PATTERNS: list[tuple[str, str]] = [
     ("crease", r"crease|creasing|fold|score|scoring|ril(l)?(ijn|lijn|en)?\b|rillijn|vouw|pli\b|plis\b|rainage|rainure|rill|falz|nut\b"),
     ("cut", r"\bcut\b|cutcontour|cut[\s_-]?contour|thru[\s_-]?cut|snij|coupe|schnitt|schneid"),
     ("dieline", r"die[\s_-]?line|dieline|die[\s_-]?cut|diecut|\bdie\b|cutter|keyline|key[\s_-]?line|stans|stanz|d[ée]coupe|\bcad\b|contour|kontur|vorm\b|forme\b|template|gabarit|sjabloon"),
+    ("technical", r"\bzone\b|zones\b|pasting|\bpaste\b|lijmzone|glue[\s_-]?area"),
     ("technical", r"(varnish|vernis|lak|uv)[\s_-]*(free|vrij|libre|frei)|lakvrij|no[\s_-]?varnish|sans[\s_-]?vernis"),
     ("finish", r"varnish|vernis|\blak\b|lak[\s_-]|\buv\b|spot[\s_-]?uv|foil|folie|hot[\s_-]?stamp|emboss|deboss|preeg|pr[äa]g|gaufrage|dorure|cold[\s_-]?foil|metallic[\s_-]?mask"),
     ("ask", r"print[\s_-]?elements?|variable[\s_-]?data|braille|\bwhite\b|\bwit\b|blanc|weiss|wei[sß]"),

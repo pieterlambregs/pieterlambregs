@@ -161,7 +161,7 @@ def analyse(pid: str, role_overrides: dict | None = None, force_rotation: int | 
         _propose_front_by_content(page, layout, texts)
 
     if layout.get("orientation_source") == "structure":
-        questions.append({"id": "orientation", "text": "The text in this file is outlined, so its reading direction cannot be detected. Check that the front label ↑ points the way the front artwork reads. If the box lies on its side, select the front and rotate it 90°: the whole box turns with it.", "options": ["ok"]})
+        questions.append({"id": "orientation", "text": "The text in this file is outlined, so its reading direction cannot be detected. Choose the front and the way it reads under “Front and reading direction”.", "options": ["ok"]})
 
     p.update({
         "status": "analysed",

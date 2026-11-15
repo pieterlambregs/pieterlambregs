@@ -97,3 +97,6 @@ pre { white-space: pre-wrap; }
   .review, .scene, .renders, .output { grid-template-columns: 1fr; }
   .side { position: static; max-height: none; }
 }
+.thumb-btn { display: inline-flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px; font-size: 12px; }
+.thumb-btn.on { background: #eef4ff; color: var(--ink); border-color: var(--accent); }
+.thumb { display: block; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
