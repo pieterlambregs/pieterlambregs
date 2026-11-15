@@ -46,28 +46,19 @@ export function RevealLines({
   );
 }
 
-/** Fades and lifts a block into place once, when it first enters the viewport. */
+/**
+ * A plain block. It used to fade in on scroll; content now simply stands
+ * where it is, and motion is kept for headlines and the hero.
+ */
 export function RevealBlock({
   children,
   className,
-  delay = 0,
 }: {
   children: ReactNode;
   className?: string;
   delay?: number;
 }) {
-  const reduced = useReducedMotion();
-  return (
-    <motion.div
-      className={className}
-      initial={reduced ? false : { opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.9, ease: EASE, delay }}
-    >
-      {children}
-    </motion.div>
-  );
+  return <div className={className}>{children}</div>;
 }
 
 function Word({

@@ -106,7 +106,7 @@ export function MediaView({ media, sizes, ratio, priority, parallax = true, clas
             sizes={sizes}
             priority={priority}
             onLoad={() => setLoaded(true)}
-            className={`object-cover transition-opacity duration-700 ${loaded ? "opacity-100" : "opacity-0"}`}
+            className={`object-cover transition-[opacity,transform] duration-700 ease-out-expo group-hover:scale-[1.03] ${loaded ? "opacity-100" : "opacity-0"}`}
           />
         )}
         {media.type === "video" && <AutoVideo src={media.src} alt={media.alt} />}

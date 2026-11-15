@@ -249,10 +249,10 @@ export default async function CaseStudy({ params }: PageProps<"/work/[slug]">) {
           />
         </TransitionLink>
         <div className="label flex justify-between border-t border-line py-6">
-          <TransitionLink href={`/work/${previous.slug}`} transitionLabel={previous.title} className="link-draw py-1">
+          <TransitionLink href={`/work/${previous.slug}`} transitionLabel={previous.title} className="link-draw py-3.5">
             ← Previous: {previous.title}
           </TransitionLink>
-          <TransitionLink href="/work" transitionLabel="All work" className="link-draw py-1">
+          <TransitionLink href="/work" transitionLabel="All work" className="link-draw py-3.5">
             All work
           </TransitionLink>
         </div>

@@ -13,7 +13,7 @@ export function Contact() {
           <Magnetic strength={0.45}>
             <a
               href={`mailto:${site.email}`}
-              className="group flex h-[clamp(8.5rem,12.5vw,12rem)] w-[clamp(8.5rem,12.5vw,12rem)] items-center justify-center rounded-full bg-accent text-[#08090b] transition-transform duration-700 ease-out-expo hover:scale-[1.06]"
+              className="group flex h-[clamp(8.5rem,12.5vw,12rem)] w-[clamp(8.5rem,12.5vw,12rem)] items-center justify-center rounded-full bg-accent text-[#08090b] transition-transform duration-700 ease-out-expo hover:scale-[1.06] active:scale-[0.98]"
             >
               <span className="label text-center leading-[1.5]">
                 Send an
@@ -42,14 +42,14 @@ export function Contact() {
 
         <div className="col-span-12 md:col-span-2 md:col-start-11">
           <h3 className="label text-muted">Elsewhere</h3>
-          <ul className="mt-3 space-y-1.5">
+          <ul className="mt-3 md:space-y-1.5">
             {socials.map((s) => (
               <li key={s.href}>
                 <a
                   href={s.href}
                   target="_blank"
                   rel="noreferrer"
-                  className="link-draw text-[1.0625rem] leading-[1.35]"
+                  className="link-draw inline-block py-2.5 text-[1.0625rem] leading-[1.35] md:py-0"
                 >
                   {s.label}
                 </a>
