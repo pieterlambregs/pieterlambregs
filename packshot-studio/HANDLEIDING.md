@@ -53,3 +53,20 @@ Je projecten blijven bewaard.
 
 Renderen gebeurt op de processor van jouw computer. Reken op ongeveer een minuut per aanzicht
 op 1500-2000 px en 10-15 minuten op 4000 px. Tijdens het renderen kan je computer trager zijn.
+
+## Bekijken op je iPhone (zonder server)
+
+De app draait op je computer; je iPhone is alleen het scherm. Je computer moet aan staan.
+
+**Op hetzelfde wifi-netwerk:** zet in `.env` `PACKSHOT_BIND=0.0.0.0` en een login in
+`PACKSHOT_USERS`, herstart met `docker compose up -d`, en open op je iPhone in Safari
+`http://<IP-van-je-computer>:8080`.
+
+**Overal (ook onderweg): Tailscale** (gratis, privé, niet openbaar op internet)
+
+1. Installeer Tailscale op je computer (https://tailscale.com/download) en op je iPhone
+   (App Store) en log op beide in met hetzelfde account.
+2. Zelfde `.env` als hierboven.
+3. Open op je iPhone `http://<naam-van-je-computer>:8080` (de naam staat in de Tailscale-app).
+
+Als icoon op je beginscherm: in Safari deelknop → **Zet op beginscherm**.
