@@ -1,0 +1,13 @@
+# Versions this project was built and tested with.
+fastapi==0.163.0
+uvicorn[standard]==0.54.0
+python-multipart==0.0.32
+pymupdf==2.1
+numpy==2.5.3
+pillow==12.3.0
+opencv-python-headless==5.0.0.93
+scikit-image==0.26.0
+rq==3.0.0
+redis==8.1.0
+pytest==9.2.0
+httpx==0.28.1

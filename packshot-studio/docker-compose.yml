@@ -1,0 +1,36 @@
+# Packshot Studio: docker compose up --build   ->  http://localhost:8080
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+  api:
+    build: { context: ., dockerfile: backend/Dockerfile }
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    environment:
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - packshot-data:/data
+    depends_on: [redis]
+    restart: unless-stopped
+
+  worker:
+    # Renders run here (Blender Cycles, CPU). Scale with: docker compose up --scale worker=2
+    build: { context: ., dockerfile: backend/Dockerfile }
+    command: rq worker renders --url redis://redis:6379/0
+    environment:
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - packshot-data:/data
+    depends_on: [redis]
+    restart: unless-stopped
+
+  web:
+    build: { context: frontend }
+    ports:
+      - "8080:80"
+    depends_on: [api]
+    restart: unless-stopped
+
+volumes:
+  packshot-data:
