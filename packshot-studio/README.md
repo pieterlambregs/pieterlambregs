@@ -17,8 +17,8 @@ docker compose up -d --build
 # open http://localhost:8080
 ```
 
-Dutch step-by-step guides: [MAC-STAP-VOOR-STAP.md](MAC-STAP-VOOR-STAP.md) (Mac, very detailed) and and sharing it with colleagues
-on the same network (with logins): [HANDLEIDING.md](HANDLEIDING.md). By default the app is only
+Dutch step-by-step guides: [MAC-STAP-VOOR-STAP.md](MAC-STAP-VOOR-STAP.md) (Mac, very detailed) and
+[HANDLEIDING.md](HANDLEIDING.md) (own computer, sharing with colleagues on the same network, iPhone). By default the app is only
 reachable on the computer itself; sharing (`PACKSHOT_BIND=0.0.0.0`) refuses to start without
 logins (`PACKSHOT_USERS`).
 
