@@ -34,8 +34,9 @@ npm install
 npm run dev                                      # http://localhost:5173 (proxies /api)
 ```
 
-Test files: `python backend/samples/make_sample.py backend/samples/` writes three synthetic
-cartons (spot-colour dieline on a layer, a flattened file, and a sheet drawn rotated 90°).
+`backend/samples/make_sample.py` generates a synthetic carton that exists **only for the
+automated tests**. It is not artwork and must never be used for visuals: packshots are made
+exclusively from real print files.
 
 ### Tests
 
