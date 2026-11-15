@@ -72,23 +72,113 @@ en druk op **Enter**. Wacht tot de cursor weer op een nieuwe regel staat (eindig
 
 ## Stap 5 – De app downloaden
 
-Plak in Terminal:
+Om de app te downloaden gebruik je het programma **git**. Op een Mac staat git er niet standaard
+op: macOS installeert het de eerste keer zelf, samen met een pakket dat de
+**opdrachtregel-ontwikkelaarstools** heet (ook wel *Command Line Tools*). Dat is een gratis,
+officieel pakket van Apple van ongeveer 1 GB. Je hoeft dit maar één keer te doen.
+
+### 5.1 Het commando geven
+
+Plak in Terminal deze twee regels (de eerste brengt je naar je thuismap):
 
 ```
 cd ~
 git clone -b claude/packshot-studio-8x67yx https://github.com/pieterlambregs/pieterlambregs.git packshot
 ```
 
-* Krijg je een venster **"De opdracht 'git' vereist de opdrachtregel-ontwikkelaarstools"**:
-  klik **Installeer**, wacht tot het klaar is (enkele minuten) en plak de tweede regel opnieuw.
-* Als het gelukt is, zie je regels als `Cloning into 'packshot'... done.`
-  Er staat nu een map **packshot** in je thuismap (in de Finder: **Ga → Thuismap**).
+Nu zijn er twee mogelijkheden:
 
-Ga daarna naar de map van de app:
+* **A. Er verschijnen regels als `Cloning into 'packshot'...` en `done.`**
+  Git stond er al op en de download is gelukt. Ga door naar **5.4**.
+* **B. Er verschijnt een venster** (zie 5.2), en in Terminal staat iets als
+  `xcode-select: note: No developer tools were found, requesting install.`
+  Er is nog **niets** gedownload; dat komt in 5.3.
+
+### 5.2 Het venster: de tools installeren
+
+Er verschijnt midden op je scherm een venster met ongeveer deze tekst:
+
+> **Voor de opdracht "git" zijn de opdrachtregelontwikkelaarstools vereist.
+> Wil je de tools nu installeren?**
+>
+> [ Verkrijg Xcode ]   [ Niet nu ]   [ **Installeer** ]
+
+1. Klik op **Installeer** (de rechterknop).
+   **Niet** op *Verkrijg Xcode*: dat is een veel groter programma (± 15 GB) dat je niet nodig hebt.
+2. Er komt een licentieovereenkomst. Klik op **Akkoord**.
+3. Er verschijnt een voortgangsbalk *"De software wordt gedownload"*. Dit duurt **5 tot 20
+   minuten**, afhankelijk van je internet. Laat je Mac aan staan.
+4. Je ziet **"De software is geïnstalleerd"**. Klik op **Gereed**.
+
+### 5.3 Het commando opnieuw geven
+
+Ga terug naar het **Terminal**-venster. Je hoeft de lange regel niet opnieuw te kopiëren:
+
+1. Klik in het Terminal-venster.
+2. Druk op de **pijltjestoets omhoog ↑**: de laatst getypte regel (`git clone ...`) verschijnt
+   weer. Zie je `cd ~`, druk dan nog een keer op **↑**.
+3. Druk op **Enter**.
+
+Nu zie je:
+
+```
+Cloning into 'packshot'...
+remote: Enumerating objects: ...
+Receiving objects: 100% ...
+Resolving deltas: 100% ...
+```
+
+Gelukt als de cursor weer op een nieuwe regel staat zonder het woord *error* of *fatal*.
+
+### 5.4 Controleren
+
+Plak:
+
+```
+ls ~/packshot/packshot-studio
+```
+
+Je ziet onder andere `backend`, `frontend`, `docker-compose.yml` en `MAC-STAP-VOOR-STAP.md`.
+In de Finder vind je de map ook terug: menu **Ga → Thuismap** → map **packshot**.
+
+Ga nu de map van de app in (dit doe je voortaan elke keer voor je een commando geeft):
 
 ```
 cd ~/packshot/packshot-studio
 ```
+
+### Lukt het niet? De twee meest voorkomende situaties
+
+**Er verschijnt geen venster, en Terminal zegt `xcrun: error: invalid active developer path`**
+Dit gebeurt vaak na een macOS-update. Plak:
+
+```
+xcode-select --install
+```
+
+Het venster van 5.2 verschijnt alsnog. Volg 5.2 en 5.3.
+
+**Het venster zegt: "Kan de software niet installeren omdat deze momenteel niet beschikbaar is
+via de software-updateserver"**
+Gebruik dan de downloadmethode zonder git hieronder.
+
+### Alternatief zonder git: de ZIP downloaden
+
+Werkt git echt niet, dan kan het ook met een gewone download:
+
+1. Open in Safari deze link:
+   https://github.com/pieterlambregs/pieterlambregs/archive/refs/heads/claude/packshot-studio-8x67yx.zip
+   Het bestand **pieterlambregs-claude-packshot-studio-8x67yx.zip** komt in je map
+   **Downloads**. (Safari pakt het vaak meteen uit; anders dubbelklik je erop.)
+2. Je krijgt een map **pieterlambregs-claude-packshot-studio-8x67yx**.
+   Hernoem die map naar **packshot** (klik erop, druk **Enter**, typ `packshot`, **Enter**).
+3. Sleep de map **packshot** naar je thuismap (in de Finder-zijbalk het huisje met je naam, of
+   menu **Ga → Thuismap**).
+4. Ga verder met **5.4**.
+
+Nadeel van deze manier: bijwerken naar een nieuwe versie doe je later ook weer door de ZIP
+opnieuw te downloaden (in plaats van `git pull`). Je bestand `.env` uit stap 6 zet je dan over
+naar de nieuwe map.
 
 ---
 
