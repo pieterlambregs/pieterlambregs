@@ -1,0 +1,26 @@
+# Server setup (VPS): HTTPS with automatic certificates, login always required.
+# Use together with the main file:
+#   docker compose -f docker-compose.yml -f deploy/docker-compose.server.yml up -d --build
+services:
+  web:
+    ports: !reset []          # not published directly; only reachable through Caddy
+    environment:
+      PACKSHOT_BIND: public   # makes the login mandatory: refuses to start without PACKSHOT_USERS
+
+  caddy:
+    image: caddy:2.8-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      PACKSHOT_DOMAIN: ${PACKSHOT_DOMAIN:?set PACKSHOT_DOMAIN in .env}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on: [web]
+
+volumes:
+  caddy-data:
+  caddy-config:

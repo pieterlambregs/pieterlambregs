@@ -1,0 +1,21 @@
+# HTTPS reverse proxy for Packshot Studio. Caddy gets and renews the Let's Encrypt
+# certificate for PACKSHOT_DOMAIN automatically (ports 80 and 443 must be open).
+{$PACKSHOT_DOMAIN} {
+	encode gzip
+	request_body {
+		max_size 500MB
+	}
+	reverse_proxy web:80 {
+		transport http {
+			read_timeout 10m
+			write_timeout 10m
+		}
+	}
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy no-referrer
+		-Server
+	}
+}

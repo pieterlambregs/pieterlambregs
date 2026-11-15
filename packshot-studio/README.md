@@ -22,6 +22,11 @@ on the same network (with logins): [HANDLEIDING.md](HANDLEIDING.md). By default 
 reachable on the computer itself; sharing (`PACKSHOT_BIND=0.0.0.0`) refuses to start without
 logins (`PACKSHOT_USERS`).
 
+On a server (VPS) with HTTPS: `deploy/install-server.sh` installs Docker and starts the app
+behind Caddy with automatic Let's Encrypt certificates and a mandatory login
+(`docker compose -f docker-compose.yml -f deploy/docker-compose.server.yml up -d --build`).
+Dutch guide for a one.com VPS: [deploy/ONE-COM.md](deploy/ONE-COM.md).
+
 Services: `web` (React UI on nginx, port 8080), `api` (FastAPI), `worker` (RQ + Blender
 Cycles, renders on CPU), `redis` (job queue). Projects and renders live in the
 `packshot-data` volume. More render throughput: `docker compose up --scale worker=2`.
