@@ -12,9 +12,15 @@ Upload  →  Review panels  →  Set up scene  →  Render  →  Download
 ## Start
 
 ```bash
-docker compose up --build
+cp .env.example .env            # settings: local only (default) or shared with logins
+docker compose up -d --build
 # open http://localhost:8080
 ```
+
+Dutch step-by-step guide for running it on your own computer and sharing it with colleagues
+on the same network (with logins): [HANDLEIDING.md](HANDLEIDING.md). By default the app is only
+reachable on the computer itself; sharing (`PACKSHOT_BIND=0.0.0.0`) refuses to start without
+logins (`PACKSHOT_USERS`).
 
 Services: `web` (React UI on nginx, port 8080), `api` (FastAPI), `worker` (RQ + Blender
 Cycles, renders on CPU), `redis` (job queue). Projects and renders live in the

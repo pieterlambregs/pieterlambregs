@@ -62,7 +62,7 @@ def list_projects() -> list[dict]:
             out.append({
                 "id": p["id"], "filename": p["filename"], "created": p["created"], "status": p["status"],
                 "meta": p["meta"], "approved": p.get("approved", False),
-                "renders": len(p.get("renders", [])), "dieline_key": p.get("dieline_key"),
+                "renders": len(list((d / "renders").glob("*/record.json"))), "dieline_key": p.get("dieline_key"),
             })
     return sorted(out, key=lambda x: -x["created"])
 
