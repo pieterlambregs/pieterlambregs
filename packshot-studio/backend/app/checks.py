@@ -48,7 +48,9 @@ def residue_mask(panel_rgb: np.ndarray, die_rgb: np.ndarray, px_per_mm: float, t
     keep = np.zeros(n, bool)
     min_len = 8.0 * px_per_mm
     for i in range(1, n):
-        if max(stats[i, cv2.CC_STAT_WIDTH], stats[i, cv2.CC_STAT_HEIGHT]) >= min_len:
+        w, h = stats[i, cv2.CC_STAT_WIDTH], stats[i, cv2.CC_STAT_HEIGHT]
+        # one straight, thin line - not a mesh (e.g. the gaps of a dot screen in the same colour)
+        if max(w, h) >= min_len and min(w, h) <= 1.2 * px_per_mm:
             keep[i] = True
     return keep[lab]
 
