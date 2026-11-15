@@ -64,15 +64,25 @@ def _edge_f1(a, b, tol=2):
     return float(2 * precision * recall / max(1e-9, precision + recall))
 
 
-def _local_edge_mismatch(e_s, e_r, size_px, tol=2):
+def _strong(gray, edges, thr=60.0):
+    """Edges with real contrast (text, line work, logos), not faint halftone or gradients."""
+    gx = cv2.Sobel(gray, cv2.CV_32F, 1, 0, ksize=3)
+    gy = cv2.Sobel(gray, cv2.CV_32F, 0, 1, ksize=3)
+    return edges & (np.hypot(gx, gy) > thr * 4)
+
+
+def _local_edge_mismatch(e_s, e_r, size_px, tol=2, s_strong=None, r_strong=None):
     """Largest local disagreement of edges (text strokes, lines) between source and render.
 
     A global score hides one missing letter; this looks at tiles of ~4 % of the face. Returns
     the worst tile: unmatched edge pixels as a fraction of the tile's edge pixels, plus its box.
     """
     k = np.ones((2 * tol + 1, 2 * tol + 1), np.uint8)
-    miss = (e_s & ~(cv2.dilate(e_r.astype(np.uint8), k) > 0)) | (e_r & ~(cv2.dilate(e_s.astype(np.uint8), k) > 0))
-    both = e_s | e_r
+    s_strong = e_s if s_strong is None else s_strong
+    r_strong = e_r if r_strong is None else r_strong
+    # a strong edge on one side must have some edge nearby on the other side
+    miss = (s_strong & ~(cv2.dilate(e_r.astype(np.uint8), k) > 0)) | (r_strong & ~(cv2.dilate(e_s.astype(np.uint8), k) > 0))
+    both = s_strong | r_strong
     t = max(12, int(size_px * 0.04))
     h, w = miss.shape
     worst = {"fraction": 0.0, "pixels": 0, "box": None}
@@ -131,7 +141,7 @@ def compare_face(render_rgba: np.ndarray, corners_px, source_rgb: np.ndarray) ->
     ssim = float(structural_similarity(gray_s, gray_r, data_range=255, gaussian_weights=True, sigma=1.5))
     e_s, e_r = _edges(gray_s), _edges(gray_r)
     f1 = _edge_f1(e_s, e_r)
-    local = _local_edge_mismatch(e_s, e_r, max(out_w, out_h))
+    local = _local_edge_mismatch(e_s, e_r, max(out_w, out_h), s_strong=_strong(gray_s, e_s), r_strong=_strong(gray_r, e_r))
     win = cv2.createHanningWindow(gray_s.shape[::-1], cv2.CV_32F)
     (dx, dy), _resp = cv2.phaseCorrelate(gray_s.astype(np.float32), gray_r.astype(np.float32), win)
     shift = float(np.hypot(dx, dy))
