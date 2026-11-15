@@ -1,0 +1,102 @@
+"use client";
+
+import { motion, useInView, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react";
+import { useRef, type ElementType, type ReactNode } from "react";
+
+const EASE = [0.16, 1, 0.3, 1] as const;
+
+/**
+ * Headline whose lines rise out of a mask the first time they scroll into
+ * view. Pass each line as a string; the element stays one heading for
+ * assistive technology.
+ */
+export function RevealLines({
+  lines,
+  as: Tag = "h2",
+  className,
+  delay = 0,
+  id,
+}: {
+  lines: readonly string[];
+  as?: ElementType;
+  className?: string;
+  delay?: number;
+  id?: string;
+}) {
+  const reduced = useReducedMotion();
+  // Watch the heading itself: the lines start outside their masks, so the
+  // browser would never report them as visible.
+  const ref = useRef<HTMLElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.35 });
+  return (
+    <Tag ref={ref} className={className} id={id}>
+      {lines.map((line, i) => (
+        <span key={i} className="-mb-[0.12em] block overflow-hidden pb-[0.12em]">
+          <motion.span
+            className="block will-change-transform"
+            initial={reduced ? false : { y: "115%" }}
+            animate={inView || reduced ? { y: 0 } : undefined}
+            transition={{ duration: 1.1, ease: EASE, delay: delay + i * 0.09 }}
+          >
+            {line}
+          </motion.span>
+        </span>
+      ))}
+    </Tag>
+  );
+}
+
+/** Fades and lifts a block into place once, when it first enters the viewport. */
+export function RevealBlock({
+  children,
+  className,
+  delay = 0,
+}: {
+  children: ReactNode;
+  className?: string;
+  delay?: number;
+}) {
+  const reduced = useReducedMotion();
+  return (
+    <motion.div
+      className={className}
+      initial={reduced ? false : { opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.9, ease: EASE, delay }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+function Word({
+  children,
+  progress,
+  range,
+}: {
+  children: string;
+  progress: MotionValue<number>;
+  range: [number, number];
+}) {
+  const reduced = useReducedMotion();
+  const opacity = useTransform(progress, range, [0.18, 1]);
+  return <motion.span style={{ opacity: reduced ? 1 : opacity }}>{children} </motion.span>;
+}
+
+/** Paragraph whose words brighten one by one as the reader scrolls through it. */
+export function ScrollWords({ text, className }: { text: string; className?: string }) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.9", "end 0.5"] });
+  const words = text.split(" ");
+
+  return (
+    <p ref={ref} className={className}>
+      {words.map((word, i) => (
+        <Word key={i} progress={scrollYProgress} range={[i / words.length, (i + 1) / words.length]}>
+          {word}
+        </Word>
+      ))}
+    </p>
+  );
+}
