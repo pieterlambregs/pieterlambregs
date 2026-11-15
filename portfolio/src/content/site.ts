@@ -13,7 +13,6 @@ export const site = {
   description:
     "Pieter Lambregs is a multidisciplinary designer based in Belgium with 15+ years of experience across branding, multimedia, digital design, motion and creative technology.",
   location: "Belgium",
-  coordinates: "50.87° N, 5.52° E",
   timezone: "Europe/Brussels",
   years: "15+",
   currentEmployer: "Sia Partners",

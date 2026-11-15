@@ -24,7 +24,7 @@ export function WorkIndex() {
                 type="button"
                 aria-pressed={on}
                 onClick={() => setFilter(c.id)}
-                className={`label flex h-10 cursor-pointer items-center gap-2 rounded-full border px-4 transition-colors duration-300 ${
+                className={`label flex h-11 cursor-pointer items-center gap-2 rounded-full border px-4 transition-[color,background-color,border-color,transform] duration-300 active:scale-[0.97] ${
                   on ? "border-fg bg-fg text-bg" : "border-line text-muted hover:border-fg hover:text-fg"
                 }`}
               >

@@ -48,7 +48,7 @@ export function Work() {
           <TransitionLink
             href="/work"
             transitionLabel="All work"
-            className="label flex h-14 items-center rounded-full border border-line px-8 transition-colors duration-300 hover:border-fg hover:bg-fg hover:text-bg"
+            className="label flex h-14 items-center rounded-full border border-line px-8 transition-[color,background-color,border-color,transform] duration-300 hover:border-fg hover:bg-fg hover:text-bg active:scale-[0.97]"
           >
             Browse all work by discipline
           </TransitionLink>

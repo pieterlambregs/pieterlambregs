@@ -33,7 +33,6 @@ export function ProjectCard({
             sizes={sizes}
             ratio={ratios[shape]}
             priority={priority}
-            className="transition-transform duration-[1.2s] ease-out-expo group-hover:scale-[0.975]"
           />
         </div>
         <div className="mt-4 flex items-baseline justify-between gap-4 border-t border-line pt-3">

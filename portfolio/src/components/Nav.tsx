@@ -17,7 +17,7 @@ function ThemeToggle() {
       type="button"
       onClick={toggle}
       aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
-      className="group relative h-8 w-8 cursor-pointer"
+      className="group relative h-11 w-11 cursor-pointer"
     >
       <span className="absolute left-1/2 top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-full border border-current">
         <span
@@ -107,7 +107,7 @@ export function Nav() {
             <ThemeToggle />
             <button
               type="button"
-              className="label -mr-2 cursor-pointer px-2 py-3 md:hidden"
+              className="label -mr-2 flex h-11 cursor-pointer items-center px-2 md:hidden"
               aria-expanded={open}
               aria-controls="mobile-menu"
               onClick={() => setOpen((v) => !v)}
@@ -161,7 +161,7 @@ export function Nav() {
               <ul className="flex flex-wrap gap-x-5 gap-y-2">
                 {socials.slice(0, 4).map((s) => (
                   <li key={s.href}>
-                    <a href={s.href} target="_blank" rel="noreferrer" className="label py-2">
+                    <a href={s.href} target="_blank" rel="noreferrer" className="label flex h-11 items-center">
                       {s.label}
                     </a>
                   </li>

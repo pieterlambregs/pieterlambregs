@@ -257,7 +257,7 @@ export const projects: Project[] = [
     year: "2024",
     discipline: "Visual identity & digital artwork",
     summary:
-      "A visual identity and poster series where classical sculpture meets acid green, barcodes and club typography.",
+      "A visual identity and poster series built from classical sculpture, acid green, barcodes and club typography.",
     cover: img("/work/rave-and-ride/01.webp", 1400, 933, "Grid of Rave and Ride posters in acid green"),
     cardShape: "portrait",
     overview:
