@@ -157,8 +157,11 @@ def analyse(pid: str, role_overrides: dict | None = None, force_rotation: int | 
         layout = dl.template_layout(info.page_w_mm, info.page_h_mm, dims)
         questions.append({"id": "no_dieline", "text": f"{layout_error} A template grid was placed; drag the fold lines onto the artwork.", "options": ["ok"]})
 
+    if not layout.get("is_template"):
+        _propose_front_by_content(page, layout, texts)
+
     if layout.get("orientation_source") == "structure":
-        questions.append({"id": "orientation", "text": "There is too little live text to tell whether the sheet is upside down. Please check the panel labels and rotate if needed.", "options": ["ok"]})
+        questions.append({"id": "orientation", "text": "The text in this file is outlined, so its reading direction cannot be detected. Check that the front label ↑ points the way the front artwork reads. If the box lies on its side, select the front and rotate it 90°: the whole box turns with it.", "options": ["ok"]})
 
     p.update({
         "status": "analysed",
@@ -181,13 +184,58 @@ def analyse(pid: str, role_overrides: dict | None = None, force_rotation: int | 
         "questions": questions,
         "approved": False,
     })
-    p["artwork_warnings"] = checks.text_warnings(texts) + checks.image_warnings(images)
+    p["analysis"]["images"] = images
+    p["analysis"]["text_warnings"] = checks.text_warnings(texts)
     _update_measure(p)
     save(p)
     return p
 
 
+def _small_print_counts(page: pymupdf.Page, layout: dict, texts: list[dict]) -> dict[int, int]:
+    """Small items (outlined glyphs, small live text) per body column; the back carries most."""
+    rects = {q["struct"]["col"]: dl.panel_rect(layout, q) for q in layout["panels"] if q["struct"]["type"] == "body"}
+    counts = {c: 0 for c in rects}
+
+    def add(cx, cy, n=1):
+        for c, (x0, y0, x1, y1) in rects.items():
+            if x0 <= cx <= x1 and y0 <= cy <= y1:
+                counts[c] += n
+                return
+
+    k = 25.4 / 72
+    for d in page.get_drawings():
+        r = d["rect"]
+        if d.get("fill") is not None and max(r.width, r.height) * k < 3.0:
+            add((r.x0 + r.x1) / 2 * k, (r.y0 + r.y1) / 2 * k)
+    for t in texts:
+        if t["size"] < 9:
+            add((t["bbox"][0] + t["bbox"][2]) / 2, (t["bbox"][1] + t["bbox"][3]) / 2, len(t["text"]))
+    return counts
+
+
+def _propose_front_by_content(page, layout, texts) -> None:
+    """Choose between the structurally proposed front and the panel opposite it.
+
+    The back of a pharmaceutical carton carries the dense small print (composition, legal
+    text), so the one of the two with clearly less small print is proposed as the front.
+    Still only a proposal: the user confirms the front.
+    """
+    a = layout.get("front_col", 0)
+    b = (a + 2) % 4
+    counts = _small_print_counts(page, layout, texts)
+    lo, hi = sorted((counts.get(a, 0), counts.get(b, 0)))
+    if hi >= 20 and hi > 1.5 * max(lo, 1):
+        best = a if counts.get(a, 0) <= counts.get(b, 0) else b
+        if best != a:
+            dl.assign_roles(layout, best, keep_user=False)
+        layout["front_reason"] = (f"proposed the panel with the least small print "
+                                  f"({lo} small items against {hi} on the panel opposite)")
+
+
 def _update_measure(p: dict) -> None:
+    a = p.get("analysis") or {}
+    face_rects = {q["role"]: dl.panel_rect(p["layout"], q) for q in p["layout"]["panels"] if q.get("role") in FACE_ROLES}
+    p["artwork_warnings"] = a.get("text_warnings", []) + checks.image_warnings(a.get("images", []), face_rects)
     m = dl.measure(p["layout"])
     p["measure"] = m
     p["dims_compare"] = dl.compare_dimensions(m["box"], p["meta"].get("dimensions"))
@@ -209,7 +257,13 @@ def update_layout(pid: str, layout: dict, front_panel: str | None = None) -> dic
         if "role" in q and q["role"] != o.get("role"):
             o["role"], o["role_source"] = q["role"], "user"
         if "rotation" in q and q["rotation"] % 360 != o.get("rotation", 0):
-            o["rotation"], o["rotation_source"] = q["rotation"] % 360, "user"
+            if o.get("role") == "front" and o.get("rotation_source") != "user":
+                # turning the front turns the whole box (e.g. a carton that lies on its side)
+                delta = (q["rotation"] - o.get("rotation", 0)) % 360
+                old["front_turn"] = (old.get("front_turn", 0) + delta) % 360
+                dl.assign_roles(old, old.get("front_col", 0), keep_user=True)
+            else:
+                o["rotation"], o["rotation_source"] = q["rotation"] % 360, "user"
     if front_panel:
         fp = by_id[front_panel]
         if fp["struct"]["type"] == "body":

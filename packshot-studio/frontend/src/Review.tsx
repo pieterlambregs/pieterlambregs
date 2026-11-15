@@ -202,6 +202,7 @@ export default function Review({ project, options, library, onChange, onApproved
 
         <section className="card">
           <h3>Scale check</h3>
+          {(layout as any).front_turn ? <p className="muted">The box lies on its side (turned {(layout as any).front_turn}°).</p> : null}
           {measured.box ? (
             <p>
               Measured on the dieline: <b>{measured.box.width.toFixed(1)}</b> (front width) × <b>{measured.box.depth.toFixed(1)}</b> (depth) ×{" "}
@@ -276,6 +277,12 @@ export default function Review({ project, options, library, onChange, onApproved
               <button onClick={() => rotate(sel, 180)}>180°</button>
               <span className="muted">now {sel.rotation}°</span>
             </div>
+            {sel.role === "front" && sel.rotation_source !== "user" && (
+              <p className="muted small">
+                Rotating the front turns the whole box: use it when the front artwork reads sideways (a carton that lies on its side, tuck ends left
+                and right). All other faces follow.
+              </p>
+            )}
             <button onClick={() => makeFront(sel)}>★ Make front</button>
           </section>
         )}

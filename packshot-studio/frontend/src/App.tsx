@@ -114,7 +114,7 @@ export default function App() {
           <Review project={project} options={options} library={library} onChange={onChange} onApproved={() => setStep("scene")} busy={busy} />
         )}
         {step === "scene" && project && <SceneSetup project={project} options={options} library={library} onChange={onChange} onRender={startRender} busy={busy} />}
-        {step === "render" && project && <RenderView project={project} renderId={renderId} onSelect={setRenderId} />}
+        {step === "render" && project && <RenderView project={project} renderId={renderId} onSelect={setRenderId} onFinished={() => { api.project(project.id).then(setProject); refreshLibrary(); }} />}
       </main>
     </div>
   );

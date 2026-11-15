@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { api, fileUrl, Project, RenderRecord } from "./api";
 
-export default function RenderView({ project, renderId, onSelect }: { project: Project; renderId: string | null; onSelect: (rid: string) => void }) {
+export default function RenderView({ project, renderId, onSelect, onFinished }: { project: Project; renderId: string | null; onSelect: (rid: string) => void; onFinished: () => void }) {
   const [rec, setRec] = useState<RenderRecord | null>(null);
 
   useEffect(() => {
@@ -12,6 +12,7 @@ export default function RenderView({ project, renderId, onSelect }: { project: P
         if (stop) return;
         setRec(r);
         if (r.status === "queued" || r.status === "running") setTimeout(tick, 1500);
+        else onFinished();
       });
     tick();
     return () => {

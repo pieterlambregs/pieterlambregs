@@ -198,6 +198,8 @@ export const ROLE_LABEL: Record<string, string> = {
   glue_flap: "Glue flap",
   tuck_flap_top: "Tuck flap (top)",
   tuck_flap_bottom: "Tuck flap (bottom)",
+  tuck_flap_left: "Tuck flap (left)",
+  tuck_flap_right: "Tuck flap (right)",
   dust_flap: "Dust flap",
   inner_flap: "Inner flap",
   ignore: "Ignore",

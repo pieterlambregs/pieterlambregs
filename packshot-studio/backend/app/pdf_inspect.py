@@ -27,8 +27,8 @@ _ROLE_PATTERNS: list[tuple[str, str]] = [
     ("dieline", r"die[\s_-]?line|dieline|die[\s_-]?cut|diecut|\bdie\b|cutter|keyline|key[\s_-]?line|stans|stanz|d[ée]coupe|\bcad\b|contour|kontur|vorm\b|forme\b|template|gabarit|sjabloon"),
     ("technical", r"(varnish|vernis|lak|uv)[\s_-]*(free|vrij|libre|frei)|lakvrij|no[\s_-]?varnish|sans[\s_-]?vernis"),
     ("finish", r"varnish|vernis|\blak\b|lak[\s_-]|\buv\b|spot[\s_-]?uv|foil|folie|hot[\s_-]?stamp|emboss|deboss|preeg|pr[äa]g|gaufrage|dorure|cold[\s_-]?foil|metallic[\s_-]?mask"),
-    ("ask", r"braille|\bwhite\b|\bwit\b|blanc|weiss|wei[sß]"),
-    ("technical", r"dimension|maat|maten|measure|afmeting|cote\b|cotes\b|bemaßung|info|legend|legende|slug|note|notes|technical|technisch|technique|guide|hulplijn|non[\s_-]?print|niet[\s_-]?druk|do[\s_-]?not[\s_-]?print|glue|lijm|colle|kleb|lakvrij|varnish[\s_-]?free|no[\s_-]?varnish|free[\s_-]?zone|registration|crop[\s_-]?mark|marks|pharmacode[\s_-]?zone|barcode[\s_-]?zone"),
+    ("ask", r"print[\s_-]?elements?|variable[\s_-]?data|braille|\bwhite\b|\bwit\b|blanc|weiss|wei[sß]"),
+    ("technical", r"caption|dimension|maat|maten|measure|afmeting|cote\b|cotes\b|bemaßung|info|legend|legende|slug|note|notes|technical|technisch|technique|guide|hulplijn|non[\s_-]?print|niet[\s_-]?druk|do[\s_-]?not[\s_-]?print|glue|lijm|colle|kleb|lakvrij|varnish[\s_-]?free|no[\s_-]?varnish|free[\s_-]?zone|registration|crop[\s_-]?mark|marks|pharmacode[\s_-]?zone|barcode[\s_-]?zone"),
 ]
 
 
@@ -472,7 +472,7 @@ def text_lines(page: pymupdf.Page) -> list[dict]:
 
 def placed_images(page: pymupdf.Page) -> list[dict]:
     out = []
-    for im in page.get_image_info():
+    for im in page.get_image_info(xrefs=True):
         b = im["bbox"]
         w_in = max((b[2] - b[0]) / 72.0, 1e-6)
         h_in = max((b[3] - b[1]) / 72.0, 1e-6)
@@ -480,5 +480,6 @@ def placed_images(page: pymupdf.Page) -> list[dict]:
             "bbox": [b[0] * PT_TO_MM, b[1] * PT_TO_MM, b[2] * PT_TO_MM, b[3] * PT_TO_MM],
             "px": [im["width"], im["height"]],
             "ppi": round(min(im["width"] / w_in, im["height"] / h_in), 1),
+            "cs": im.get("cs-name"),
         })
     return out

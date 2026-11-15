@@ -18,7 +18,8 @@ from dataclasses import dataclass
 
 ROLES = [
     "front", "back", "left", "right", "top", "bottom",
-    "glue_flap", "tuck_flap_top", "tuck_flap_bottom", "dust_flap", "inner_flap", "ignore",
+    "glue_flap", "tuck_flap_top", "tuck_flap_bottom", "tuck_flap_left", "tuck_flap_right",
+    "dust_flap", "inner_flap", "ignore",
 ]
 
 
@@ -314,15 +315,34 @@ def propose_front(panels: list[dict], widths: list[float]) -> tuple[int, str]:
     return wide_cols[0], "proposed the first wide panel"
 
 
+# Rolling the box a quarter turn clockwise (as seen from the front) when its front artwork
+# reads sideways: the face that was on top goes to the right, and so on. Every face image
+# turns with it: +90 deg, except the back, which turns -90 deg when seen from behind.
+_ROLL_CW = {"top": "right", "right": "bottom", "bottom": "left", "left": "top", "front": "front", "back": "back",
+            "tuck_flap_top": "tuck_flap_right", "tuck_flap_bottom": "tuck_flap_left",
+            "tuck_flap_right": "tuck_flap_bottom", "tuck_flap_left": "tuck_flap_top"}
+
+
+def _roll(role: str, rot: int, turns: int) -> tuple[str, int]:
+    for _ in range(turns % 4):
+        new = _ROLL_CW.get(role, role)
+        rot = (rot + (270 if role == "back" else 90 if role in _ROLL_CW else 0)) % 360
+        role = new
+    return role, rot
+
+
 def assign_roles(layout: dict, front_col: int, keep_user: bool = True) -> None:
     """Set role and default rotation of every panel from the fold topology.
 
     Rotation is the clockwise turn applied to the cropped panel so that it is upright for
     its face: body faces seen from outside, top seen from above with the front edge at the
     bottom of the view, bottom seen from below with the front edge at the top of the view.
+    layout["front_turn"] (0/90/180/270) turns the whole box when the front artwork reads
+    sideways on the structural carton (a box that lies on its side, tuck ends left/right).
     Panels the user relabelled or rotated by hand are left alone when keep_user is set.
     """
     k = layout.get("sheet_rotation", 0)
+    turn = layout.get("front_turn", 0) % 360
     col_role = {(front_col + j) % 4: _BODY_ORDER[j] for j in range(4)}
     layout["front_col"] = front_col
     for p in layout["panels"]:
@@ -345,11 +365,13 @@ def assign_roles(layout: dict, front_col: int, keep_user: bool = True) -> None:
                 role = "inner_flap"
             else:
                 role = "dust_flap"
+        rot = (k * 90 + topo) % 360
+        role, rot = _roll(role, rot, turn // 90)
         if not (keep_user and p.get("role_source") == "user"):
             p["role"] = role
             p["role_source"] = "fold"
         if not (keep_user and p.get("rotation_source") == "user"):
-            p["rotation"] = (k * 90 + topo) % 360
+            p["rotation"] = rot
             p["rotation_source"] = "fold"
         p["is_front"] = p.get("role") == "front"
 
@@ -490,6 +512,8 @@ def measure(layout: dict) -> dict:
         w, h = x1 - x0, y1 - y0
         if layout.get("sheet_rotation", 0) % 2 == 1:
             w, h = h, w  # report width/height as on the upright carton
+        if layout.get("front_turn", 0) % 180 == 90:
+            w, h = h, w  # the box lies on its side
         sizes[p["id"]] = {"w": round(w, 2), "h": round(h, 2)}
         by_role.setdefault(p["role"], []).append((w, h))
 

@@ -38,8 +38,19 @@ def residue_mask(panel_rgb: np.ndarray, die_rgb: np.ndarray, px_per_mm: float, t
     lines = cv2.morphologyEx(m, cv2.MORPH_OPEN, np.ones((1, L), np.uint8)) | \
         cv2.morphologyEx(m, cv2.MORPH_OPEN, np.ones((L, 1), np.uint8))
     blobs = cv2.morphologyEx(m, cv2.MORPH_OPEN, np.ones((T, T), np.uint8))
-    blobs = cv2.dilate(blobs, np.ones((3, 3), np.uint8))
-    return (lines.astype(bool)) & ~(blobs.astype(bool))
+    # thin slivers along the edge of a same-coloured area (a magenta band, a logo) are artwork:
+    # ignore everything within ~0.6 mm of such an area
+    g = max(3, int(round(0.6 * px_per_mm)) * 2 + 1)
+    blobs = cv2.dilate(blobs, np.ones((g, g), np.uint8))
+    cand = ((lines > 0) & ~(blobs > 0)).astype(np.uint8)
+    # a dieline remnant is a long line (usually a whole panel edge); drop short pieces
+    n, lab, stats, _ = cv2.connectedComponentsWithStats(cand, connectivity=8)
+    keep = np.zeros(n, bool)
+    min_len = 8.0 * px_per_mm
+    for i in range(1, n):
+        if max(stats[i, cv2.CC_STAT_WIDTH], stats[i, cv2.CC_STAT_HEIGHT]) >= min_len:
+            keep[i] = True
+    return keep[lab]
 
 
 def residue_check(panel_rgb, die_rgb, px_per_mm) -> dict:
@@ -114,6 +125,27 @@ def text_warnings(lines: list[dict]) -> list[str]:
     return sorted(set(out))
 
 
-def image_warnings(images: list[dict], min_ppi: float = 250.0) -> list[str]:
-    return [f"placed image at {im['ppi']:.0f} ppi (below {min_ppi:.0f} ppi) may look soft"
-            for im in images if im["ppi"] < min_ppi and (im["bbox"][2] - im["bbox"][0]) > 3]
+def image_warnings(images: list[dict], faces: dict[str, tuple] | None = None, min_ppi: float = 250.0) -> list[str]:
+    """One warning per face for placed images below min_ppi (grouped, not one line per image)."""
+    low = [im for im in images if im["ppi"] < min_ppi and (im["bbox"][2] - im["bbox"][0]) > 3]
+    if not low:
+        return []
+    groups: dict[str, list[dict]] = {}
+    for im in low:
+        x0, y0, x1, y1 = im["bbox"]
+        hit = "outside the box faces"
+        for role, (a0, b0, a1, b1) in (faces or {}).items():
+            if min(x1, a1) - max(x0, a0) > 1 and min(y1, b1) - max(y0, b0) > 1:
+                hit = role
+                break
+        groups.setdefault(hit, []).append(im)
+    out = []
+    for where, ims in groups.items():
+        if where == "outside the box faces":
+            continue
+        ppis = sorted({round(i["ppi"]) for i in ims})
+        rgb = sum(1 for i in ims if "RGB" in (i.get("cs") or ""))
+        out.append(f"{where}: {len(ims)} placed image(s) at {', '.join(map(str, ppis))} ppi (below {min_ppi:.0f})"
+                   + (f", {rgb} of them RGB (often flattened shadows or glows)" if rgb else "")
+                   + " - they may look soft")
+    return out

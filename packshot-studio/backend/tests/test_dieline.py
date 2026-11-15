@@ -147,3 +147,24 @@ def test_residue_detected_when_dieline_left_in_panel(samples, data_dir):
     assert 140 <= r["bbox_px"][0] <= 152
     panel[100:400, 150:152] = (0, 153, 98)
     assert checks.residue_check(panel, np.array([230, 0, 126]), 600 / 25.4)["status"] == "pass"
+
+
+def test_box_lying_on_its_side(samples):
+    """Turning the front a quarter turn rolls the whole box: lids become the side faces."""
+    _info, layout = _layout(samples["layered"])
+    before = {p["id"]: (p["role"], p["rotation"]) for p in layout["panels"]}
+    layout["front_turn"] = 90
+    dl.assign_roles(layout, layout["front_col"], keep_user=False)
+    after = {p["id"]: (p["role"], p["rotation"]) for p in layout["panels"]}
+    assert after["body0"] == ("front", 90)
+    assert after["body2"] == ("back", 270)
+    assert after["top_lid_2"] == ("right", (before["top_lid_2"][1] + 90) % 360)
+    assert after["body1"][0] == "bottom" and after["body3"][0] == "top"
+    assert after["bottom_lid_0"][0] == "left"
+    m = dl.measure(layout)
+    assert m["box"] == pytest.approx({"width": 108.5, "depth": 69.5, "height": 69.5}, abs=0.05)
+    assert m["issues"] == []
+    # four quarter turns bring everything back
+    layout["front_turn"] = 0
+    dl.assign_roles(layout, layout["front_col"], keep_user=False)
+    assert {p["id"]: (p["role"], p["rotation"]) for p in layout["panels"]} == before
