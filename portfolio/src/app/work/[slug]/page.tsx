@@ -28,7 +28,12 @@ export async function generateMetadata({ params }: PageProps<"/work/[slug]">): P
       title,
       description: project.summary,
       type: "article",
-      images: project.cover.type === "image" ? [{ url: project.cover.src, alt: project.cover.alt }] : undefined,
+      images:
+        project.cover.type === "image"
+          ? [{ url: project.cover.src, alt: project.cover.alt }]
+          : project.cover.type === "youtube"
+            ? [{ url: project.cover.poster, alt: project.cover.alt }]
+            : undefined,
     },
   };
 }
@@ -134,7 +139,7 @@ export default async function CaseStudy({ params }: PageProps<"/work/[slug]">) {
       </header>
 
       <div className="intro-fade" style={{ "--d": "500ms" } as React.CSSProperties}>
-        <MediaView media={project.cover} sizes="100vw" ratio="16 / 9" priority className="max-h-[92svh] w-full" />
+        <MediaView media={project.cover} sizes="100vw" ratio="16 / 9" priority playable className="max-h-[92svh] w-full" />
       </div>
 
       <div className="gutter">

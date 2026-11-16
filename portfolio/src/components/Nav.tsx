@@ -5,6 +5,7 @@ import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScro
 import { useEffect, useState } from "react";
 import { nav, site, socials } from "@/content/site";
 import { useTheme } from "@/components/providers/Providers";
+import { Logo } from "@/components/ui/Logo";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { TransitionLink } from "@/components/ui/TransitionLink";
 
@@ -73,10 +74,10 @@ export function Nav() {
             href="/"
             transitionLabel={site.name}
             onClick={() => setOpen(false)}
-            className="text-[0.8125rem] font-semibold uppercase leading-none tracking-[-0.01em]"
-            aria-label={`${site.name}, home`}
+            className="block py-2"
+            aria-label="ArtLab, home"
           >
-            Pieter Lambregs
+            <Logo className="h-[1.375rem] w-auto sm:h-6" />
           </TransitionLink>
 
           <div className="flex items-center gap-5 md:gap-8">

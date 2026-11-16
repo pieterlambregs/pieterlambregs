@@ -5,18 +5,18 @@
 
 export const site = {
   name: "Pieter Lambregs",
-  url: "https://pieterlambregs.be", // TODO: set to the production domain
+  url: "https://artlab-media.be",
   role: "Multidisciplinary Designer",
   tagline: "Creative Thinker. Visual Maker.",
   intro:
     "I turn ideas into meaningful visual experiences. Working across design, branding, multimedia and digital innovation, I combine creative thinking with hands-on execution to create work that connects people, brands and technology.",
   description:
-    "Pieter Lambregs is a multidisciplinary designer based in Belgium with 15+ years of experience across branding, multimedia, digital design, motion and creative technology.",
+    "Pieter Lambregs is a multidisciplinary designer based in Belgium with 18 years of experience across branding, multimedia, digital design, motion and creative technology.",
   location: "Belgium",
   timezone: "Europe/Brussels",
-  years: "15+",
-  currentEmployer: "Sia Partners",
-  currentRole: "Multimedia Designer",
+  years: "18",
+  currentEmployer: "EG",
+  currentRole: "Designer",
   status: "Open to new ideas",
   email: "info@artlab-media.be",
 
@@ -25,7 +25,7 @@ export const site = {
    * marked placeholders. Set to false to hide every unfinished section
    * instead (the rest of the page closes up around them).
    */
-  showPlaceholders: true,
+  showPlaceholders: false,
 } as const;
 
 export const nav = [
@@ -51,18 +51,19 @@ export const philosophy = {
 export const about = {
   headline: ["Curious by nature.", "Creative by design."],
   paragraphs: [
-    "I’m Pieter Lambregs, a multidisciplinary visual designer with more than 15 years of experience bringing ideas to life through design and communication.",
+    "I’m Pieter Lambregs, a multidisciplinary visual designer with 18 years of experience bringing ideas to life through design and communication.",
     "Throughout my career, I’ve worked across a broad range of creative disciplines, from branding and graphic design to multimedia, digital experiences and visual storytelling.",
     "I enjoy exploring new technologies, discovering different ways of working and finding creative solutions to complex challenges.",
     "For me, design is a continuous process of learning, experimenting and creating.",
   ],
   /**
-   * Sourced from Pieter's LinkedIn profile. Sia Partners is listed as the
-   * current context as briefed. Check every row before launch.
+   * Sourced from Pieter's LinkedIn profile; EG, Sia Partners and the years of
+   * experience confirmed by Pieter in November 2026.
    */
   experience: [
-    { company: "Sia Partners", role: "Multimedia Designer", period: "Now" },
+    { company: "EG", role: "Designer", period: "2026 – Now" },
     { company: "Autoglass Clinic", role: "Marketing Lead, BeLux", period: "2025 – 2026" },
+    { company: "Sia Partners", role: "Senior Marketing & UX/UI Consultant", period: "2024 – 2025" },
     { company: "DYKA Belgium", role: "Digital Marketing Manager", period: "2023" },
     { company: "Belfius · Banx", role: "Digital Designer", period: "2022" },
     { company: "Impermo", role: "Graphic Brand Builder", period: "2020 – 2022" },
@@ -71,7 +72,7 @@ export const about = {
     { company: "Hellinx Printing", role: "Graphic Designer", period: "2008 – 2009" },
   ],
   facts: [
-    { label: "Experience", value: "15+ years" },
+    { label: "Experience", value: "18 years" },
     { label: "Based in", value: "Bilzen, Belgium" },
     { label: "Education", value: "Graphic Design, Katholieke Hogeschool Limburg" },
     { label: "Languages", value: "Dutch, English, French, German" },

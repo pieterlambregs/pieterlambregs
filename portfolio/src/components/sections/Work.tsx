@@ -37,7 +37,12 @@ export function Work() {
           const place = placements[i % placements.length];
           return (
             <RevealBlock key={project.slug} className={`col-span-12 ${place.cols}`}>
-              <ProjectCard project={project} shape={place.shape} sizes={place.sizes} />
+              {/* A video poster is 16:9; a portrait slot would crop it too hard. */}
+              <ProjectCard
+                project={project}
+                shape={project.cover.type === "youtube" && place.shape === "portrait" ? "landscape" : place.shape}
+                sizes={place.sizes}
+              />
             </RevealBlock>
           );
         })}

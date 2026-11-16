@@ -55,6 +55,8 @@ export type CategoryId = (typeof categories)[number]["id"];
 export type Media =
   | { type: "image"; src: string; width: number; height: number; alt: string }
   | { type: "video"; src: string; width: number; height: number; alt: string }
+  /** A YouTube video: local poster image, player loads only after a click. */
+  | { type: "youtube"; id: string; poster: string; width: number; height: number; alt: string }
   /** A designed stand-in for media that has not been supplied yet. */
   | { type: "pending"; width: number; height: number; alt: string; note: string };
 
@@ -366,30 +368,30 @@ export const projects: Project[] = [
     source: { label: "Product campaign on Behance", href: "https://www.behance.net/gallery/150654067/Product-campaign-by-ArtLab" },
   },
   {
-    slug: "motion-reel",
-    title: "Motion reel",
-    client: "Selected clients",
+    slug: "artlab-logo-animation",
+    title: "ArtLab logo animation",
+    client: "ArtLab",
     category: "motion",
     year: "2026",
-    discipline: "Motion graphics & video",
-    summary:
-      "2D and 3D animation, in-app stories, instruction videos and campaign edits, collected in one reel.",
+    discipline: "Motion graphics",
+    summary: "The ArtLab wordmark brought to life as a glowing neon sign above a dark, reflective floor.",
     cover: {
-      type: "pending",
-      width: 1600,
-      height: 900,
-      alt: "Motion reel, footage to be added",
-      note: "Reel footage to be added",
+      type: "youtube",
+      id: "duBXquTEQTI",
+      poster: "/work/artlab-logo-animation/poster.webp",
+      width: 1280,
+      height: 720,
+      alt: "ArtLab logo animation: neon wordmark glowing above a dark reflective floor",
     },
-    cardShape: "portrait",
+    cardShape: "landscape",
     overview:
-      "Motion runs through most of the work on this site: animations and instruction videos for Impermo, in-app stories for Banx and animated visuals for consulting clients. This page is reserved for the reel that brings them together.",
-    role: "Motion design & editing",
-    deliverables: ["2D animation", "3D animation", "In-app stories", "Instruction videos", "Campaign edits"],
-    tools: ["After Effects", "Premiere Pro"],
+      "A logo animation for ArtLab, my own studio. Motion runs through most of the work on this site: animations and instruction videos for Impermo, in-app stories for Banx and animated visuals for consulting clients.",
+    role: "Motion design",
+    deliverables: ["Logo animation"],
+    tools: ["After Effects"],
     credits: [
-      { label: "Format", value: "Showreel" },
-      { label: "Status", value: "In the edit" },
+      { label: "Client", value: "ArtLab" },
+      { label: "Format", value: "Logo animation" },
     ],
     story: {
       background: undefined,
@@ -397,19 +399,8 @@ export const projects: Project[] = [
       concept: undefined,
     },
     exploration: [],
-    execution: [
-      {
-        layout: "full",
-        media: {
-          type: "pending",
-          width: 1600,
-          height: 900,
-          alt: "Motion reel, footage to be added",
-          note: "Add the reel: /public/work/motion-reel/reel.mp4",
-        },
-      },
-    ],
-    source: { label: "YouTube channel", href: "https://www.youtube.com/channel/UCzN-hm9fPv8sWuL1PVWPYkQ" },
+    execution: [],
+    source: { label: "Watch on YouTube", href: "https://youtu.be/duBXquTEQTI" },
   },
   {
     slug: "belfius-banx",
