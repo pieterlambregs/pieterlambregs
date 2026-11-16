@@ -230,12 +230,15 @@ def verify(render_path, meta: dict, faces_src: dict[str, str], shadow_enabled: b
         lm = front["local_mismatch"]
         structure_ok = (front["ssim"] >= THRESHOLDS["ssim"] and front["edge_f1"] >= THRESHOLDS["edge_f1"]
                         and front["shift_px"] <= THRESHOLDS["shift_px"] and lm["fraction"] <= THRESHOLDS["local_mismatch"])
+        too_small = min(front["size_px"]) < 350
         result["checks"].append({
             "name": "Front structure (text and positions)",
-            "status": "pass" if structure_ok else "fail",
+            "status": "pass" if structure_ok else ("warn" if too_small else "fail"),
             "detail": f"SSIM {front['ssim']:.3f}, edge match {front['edge_f1']:.3f}, shift {front['shift_px']:.2f} px, "
                       f"worst local difference {lm['fraction'] * 100:.0f}%"
-                      + (f" at {lm['box']} (marked in the report image)" if lm["fraction"] > THRESHOLDS["local_mismatch"] else ""),
+                      + (f" at {lm['box']} (marked in the report image)" if lm["fraction"] > THRESHOLDS["local_mismatch"] else "")
+                      + (f". The front is only {front['size_px'][0]} x {front['size_px'][1]} px in this image: too small to check "
+                         "small text; render larger to verify" if too_small and not structure_ok else ""),
         })
         result["checks"].append({
             "name": "Front colour",

@@ -38,6 +38,10 @@ DEFAULT_SCENE = {
     "formats": ["png", "jpg", "pdf"], "jpg_background": "#ffffff", "pdf_info_strip": True,
     "samples": None,
     "group": None,  # {"projects": [pid, ...], "spacing_mm": 12, "depth_offset_mm": 25}
+    # Free composition (overrides group): the first entry is the hero box used for light
+    # calibration and verification. [{"project": pid, "x": mm, "y": mm, "z": mm, "rotation": [rx, ry, rz]}]
+    "arrangement": None,
+    "title": None,  # used instead of the source file name in output file names
 }
 PRESETS_FILE = P.DATA / "presets.json"
 
@@ -88,6 +92,53 @@ def save_presets(p: dict) -> None:
 
 # --- job building -----------------------------------------------------------------------
 
+def _box_corners(b: dict) -> list[tuple[float, float, float]]:
+    """World corners (mm) of a placed box, same conventions as the renderer."""
+    import math
+    W, D, H = b["dims"]["width"], b["dims"]["depth"], b["dims"]["height"]
+    rx, ry, rz = [math.radians(v) for v in b.get("rotation", [0, 0, 0])]
+
+    def rot(p):
+        x, y, z = p
+        y, z = y * math.cos(rx) - z * math.sin(rx), y * math.sin(rx) + z * math.cos(rx)
+        x, z = x * math.cos(ry) + z * math.sin(ry), -x * math.sin(ry) + z * math.cos(ry)
+        x, y = x * math.cos(rz) - y * math.sin(rz), x * math.sin(rz) + y * math.cos(rz)
+        return x, y, z
+
+    pts = [rot((sx * W / 2, sy * D / 2, z)) for sx in (-1, 1) for sy in (-1, 1) for z in (0, H)]
+    minz = min(p[2] for p in pts)
+    cx = (min(p[0] for p in pts) + max(p[0] for p in pts)) / 2
+    cy = (min(p[1] for p in pts) + max(p[1] for p in pts)) / 2
+    px, py = b.get("position", [0, 0])
+    return [(p[0] - cx + px, p[1] - cy + py, p[2] - minz + b.get("z", 0)) for p in pts]
+
+
+def check_no_overlap(boxes: list[dict], tol: float = 0.2) -> None:
+    """Refuse compositions in which boxes would pass through each other (separating axes)."""
+    import numpy as np
+
+    def axes(c):
+        c = np.array(c)
+        # edges of a box: from corner 0 along its three directions
+        e = [c[1] - c[0], c[2] - c[0], c[4] - c[0]]
+        return [v / np.linalg.norm(v) for v in e if np.linalg.norm(v) > 1e-9]
+
+    cs = [np.array(_box_corners(b)) for b in boxes]
+    for i in range(len(cs)):
+        for j in range(i + 1, len(cs)):
+            a, b = cs[i], cs[j]
+            ax = axes(a) + axes(b)
+            ax += [np.cross(u, v) for u in axes(a) for v in axes(b) if np.linalg.norm(np.cross(u, v)) > 1e-6]
+            separated = False
+            for v in ax:
+                v = v / np.linalg.norm(v)
+                pa, pb = a @ v, b @ v
+                if pa.max() <= pb.min() + tol or pb.max() <= pa.min() + tol:
+                    separated = True
+                    break
+            if not separated:
+                raise ValueError(f"boxes {i + 1} and {j + 1} of the composition overlap")
+
 def box_dims(p: dict) -> dict:
     box = dict(p["measure"]["box"])
     cmpd = p.get("dims_compare") or {}
@@ -119,7 +170,19 @@ def build_job(p: dict, scene: dict, view: str, out_png: Path, meta_json: Path) -
         el = float(scene["elevation"])
     w, h = export.resolution(int(scene["long_side"]), scene["aspect"], scene.get("custom_w"), scene.get("custom_h"))
     boxes = [box_spec(p, scene["finish"])]
-    group = scene.get("group") or {}
+    if scene.get("arrangement"):
+        boxes = []
+        for a in scene["arrangement"]:
+            q = P.load(a["project"])
+            if not q.get("approved"):
+                raise ValueError(f"project {q['filename']} is not approved yet")
+            b = box_spec(q, scene["finish"])
+            b["position"] = [float(a.get("x", 0)), float(a.get("y", 0))]
+            b["z"] = float(a.get("z", 0))
+            b["rotation"] = [float(v) for v in a.get("rotation", [0, 0, 0])]
+            boxes.append(b)
+        check_no_overlap(boxes)
+    group = {} if scene.get("arrangement") else (scene.get("group") or {})
     if group.get("projects"):
         spacing = float(group.get("spacing_mm", 12))
         depth = float(group.get("depth_offset_mm", 25))
@@ -209,7 +272,7 @@ def render_job(pid: str, rid: str) -> None:
             meta = json.loads(meta_json.read_text())
             faces_src = job["boxes"][0]["faces"]
             report = verify.verify(out_png, meta, faces_src, job["shadow"], d / f"{view}_verify.png")
-            files = export.write_outputs(out_png, d, p["meta"]["source_name"], VIEW_LABELS[view], scene["formats"],
+            files = export.write_outputs(out_png, d, scene.get("title") or p["meta"]["source_name"], VIEW_LABELS[view], scene["formats"],
                                          scene["background"], scene["jpg_background"], scene["pdf_info_strip"], info)
             thumb = Image.open(out_png)
             thumb.thumbnail((800, 800))

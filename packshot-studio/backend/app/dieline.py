@@ -537,6 +537,24 @@ def measure(layout: dict) -> dict:
     depth = avg("left", "right", 0)
     height_vals = [s[1] for r in ("front", "back", "left", "right") for s in by_role.get(r, [])]
     height = sum(height_vals) / len(height_vals) if height_vals else None
+
+    # The box itself is defined by the four body panels (flaps are cut slightly smaller to
+    # fit inside). Use them whenever they exist, then apply the turn of a lying box.
+    body = {p["struct"]["col"]: p for p in layout["panels"] if p["struct"].get("type") == "body"}
+    if len(body) == 4 and "front_col" in layout:
+        def struct_wh(p):
+            x0, y0, x1, y1 = panel_rect(layout, p)
+            w, h = x1 - x0, y1 - y0
+            return (h, w) if layout.get("sheet_rotation", 0) % 2 == 1 else (w, h)
+        fc = layout["front_col"]
+        wh = {c: struct_wh(p) for c, p in body.items()}
+        W = (wh[fc][0] + wh[(fc + 2) % 4][0]) / 2
+        D = (wh[(fc + 1) % 4][0] + wh[(fc + 3) % 4][0]) / 2
+        H = sum(v[1] for v in wh.values()) / 4
+        if layout.get("front_turn", 0) % 180 == 90:
+            width, height, depth = H, W, D
+        else:
+            width, height, depth = W, H, D
     issues = []
 
     def pair(a, b, idx, label):

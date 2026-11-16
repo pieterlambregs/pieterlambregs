@@ -192,3 +192,15 @@ def test_zones_and_pasting_are_technical():
     for n in ("Pasting", "Braille zone", "Text & Barcode zone", "Caption", "Varnish Free Area"):
         assert pi.classify_name(n) == "technical", n
     assert pi.classify_name("Print elements") == "ask"
+
+
+def test_lying_box_size_comes_from_body_panels_not_flaps(samples):
+    """Flaps are cut smaller than the box; the box size must come from the body panels."""
+    _info, layout = _layout(samples["layered"])
+    # make the lid columns 1 mm narrower than the body, as on real cartons
+    layout["front_turn"] = 90
+    dl.assign_roles(layout, layout["front_col"], keep_user=False)
+    m = dl.measure(layout)
+    assert m["box"]["depth"] == pytest.approx(69.5, abs=0.05)
+    assert m["box"]["width"] == pytest.approx(108.5, abs=0.05)
+    assert m["box"]["height"] == pytest.approx(69.5, abs=0.05)

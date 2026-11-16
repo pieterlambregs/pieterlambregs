@@ -176,8 +176,20 @@ def build_box(spec, idx, calibration=False):
     for p in me.polygons:
         p.use_smooth = False
     px, py = spec.get("position", [0, 0])
+    rot = spec.get("rotation") or [0.0, 0.0, spec.get("rotation_z", 0.0)]  # degrees about X, Y, Z
+    ob.rotation_euler = Euler([math.radians(a) for a in rot], "XYZ")
     ob.location = (px * MM, py * MM, 0.0)
-    ob.rotation_euler = Euler((0, 0, math.radians(spec.get("rotation_z", 0))))
+    # rest the lowest point of the box on its base level (the floor, or the box below it)
+    bpy.context.view_layer.update()
+    ws = [ob.matrix_world @ v.co for v in me.vertices]
+    minz = min(w.z for w in ws)
+    # turn about the box's own centre: keep its footprint centred on the given position
+    cx = (min(w.x for w in ws) + max(w.x for w in ws)) / 2
+    cy = (min(w.y for w in ws) + max(w.y for w in ws)) / 2
+    ob.location.x += px * MM - cx
+    ob.location.y += py * MM - cy
+    ob.location.z += spec.get("z", 0.0) * MM - minz
+    bpy.context.view_layer.update()
     return ob
 
 
