@@ -1,0 +1,9 @@
+{
+  "name": "Portfolio design system builder",
+  "id": "pieter-lambregs-portfolio-ds",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "editorType": ["figma"],
+  "documentAccess": "dynamic-page",
+  "networkAccess": { "allowedDomains": ["none"] }
+}
