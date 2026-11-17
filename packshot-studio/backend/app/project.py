@@ -20,7 +20,7 @@ import numpy as np
 import pymupdf
 from PIL import Image
 
-from . import checks, dieline as dl, pdf_inspect as pi, raster
+from . import checks, colour_match, dieline as dl, pdf_inspect as pi, raster
 from .filename_parser import parse_filename
 
 DATA = Path(os.environ.get("PACKSHOT_DATA", Path(__file__).resolve().parents[1] / "data"))
@@ -343,6 +343,9 @@ def extract_panels(pid: str, dpi: int | None = None) -> dict:
 
     die_rgb = _dieline_colour(p, a)
 
+    cmatch = p["settings"].get("colour_match")
+    lut = colour_match.build_lut([(tuple(a), tuple(b)) for a, b in cmatch["pairs"]]) if cmatch and cmatch.get("pairs") else None
+
     results = {}
     faces = {}
     for q in p["layout"]["panels"]:
@@ -353,6 +356,8 @@ def extract_panels(pid: str, dpi: int | None = None) -> dict:
         rect = (x0 + inset, y0 + inset, x1 - inset, y1 - inset)
         img = raster.render_region_srgb(page, rect, dpi, p["settings"]["icc_profile"], p["settings"]["intent"])
         img = _rotate(img, q.get("rotation", 0))
+        if lut is not None:
+            img = colour_match.apply(img, lut)
         out = d / "panels" / f"{q['id']}.png"
         raster.save_png_srgb(img, out)
         arr = np.asarray(img)
@@ -373,6 +378,13 @@ def extract_panels(pid: str, dpi: int | None = None) -> dict:
     p["faces"] = faces
     p["panel_dpi"] = dpi
     p["die_rgb"] = None if die_rgb is None else [float(v) for v in die_rgb]
+    if lut is not None:
+        p.setdefault("notes", [])
+        p["colour_match_note"] = (f"Colours matched to “{cmatch.get('label', 'reference')}”: "
+                                  + ", ".join(f"{tuple(a)}→{tuple(b)}" for a, b in cmatch["pairs"])
+                                  + ". Positions, text and logos are unchanged; only these ink colours are shifted.")
+    else:
+        p.pop("colour_match_note", None)
     missing = [f for f in FACE_ROLES if f not in faces]
     p["panel_warnings"] = ([f"No panel is labelled “{m}”; that face renders as plain board." for m in missing]
                            + [f"{results[i]['role']}: {w}" for i in results for w in results[i].get("edge_warnings", [])]

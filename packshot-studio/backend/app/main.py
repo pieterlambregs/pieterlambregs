@@ -109,6 +109,21 @@ def put_settings(pid: str, settings: dict = Body(...)):
     return _public(p)
 
 
+@app.put("/api/projects/{pid}/colour-match")
+def put_colour_match(pid: str, body: dict = Body(...)):
+    """{"label": "brand RGB draft", "pairs": [[[r,g,b], [r,g,b]], ...]} or {} to switch off."""
+    p = _get(pid)
+    pairs = body.get("pairs") or []
+    for a, b in pairs:
+        if len(a) != 3 or len(b) != 3 or not all(0 <= v <= 255 for v in [*a, *b]):
+            raise HTTPException(400, "pairs must be [[r,g,b],[r,g,b]] with values 0-255")
+    p["settings"]["colour_match"] = {"label": body.get("label", "reference"), "pairs": pairs} if pairs else None
+    P.save(p)
+    if p.get("approved"):
+        p = P.extract_panels(pid)
+    return _public(p)
+
+
 @app.put("/api/projects/{pid}/layout")
 def put_layout(pid: str, body: dict = Body(...)):
     _get(pid)
