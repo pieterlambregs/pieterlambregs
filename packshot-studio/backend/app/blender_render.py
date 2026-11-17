@@ -91,6 +91,32 @@ FINISHES = {
 }
 
 
+def make_true_color_material(name, tex_path, shade=1.0):
+    """Every pixel of the face shows the file's colour exactly (no light, no gloss).
+
+    With the Standard view transform an emission of strength 1 reproduces the sRGB texture
+    1:1. `shade` (<= 1) can darken a face slightly for depth; 1.0 = identical to the file.
+    The box still blocks the lights, so the shadow on the floor is kept.
+    """
+    m = bpy.data.materials.new(name)
+    m.use_nodes = True
+    nt = m.node_tree
+    for n in list(nt.nodes):
+        if n.type != "OUTPUT_MATERIAL":
+            nt.nodes.remove(n)
+    out = next(n for n in nt.nodes if n.type == "OUTPUT_MATERIAL")
+    em = nt.nodes.new("ShaderNodeEmission")
+    em.inputs["Strength"].default_value = float(shade)
+    if tex_path:
+        tex = _image_node(nt, tex_path)
+        tex.interpolation = "Cubic"
+        nt.links.new(tex.outputs["Color"], em.inputs["Color"])
+    else:
+        em.inputs["Color"].default_value = (0.9, 0.9, 0.9, 1)
+    nt.links.new(em.outputs["Emission"], out.inputs["Surface"])
+    return m
+
+
 def make_material(name, tex_path, finish, mask=None, flat_color=None):
     m = bpy.data.materials.new(name)
     m.use_nodes = True
@@ -166,7 +192,11 @@ def build_box(spec, idx, calibration=False):
             mat = make_material(f"cal_{idx}_{name}", None, spec.get("finish", "matte"), flat_color=(0.5, 0.5, 0.5))
         else:
             mask = (spec.get("masks") or {}).get(name)
-            mat = make_material(f"m_{idx}_{name}", spec["faces"].get(name), spec.get("finish", "matte"), mask)
+            if spec.get("finish") == "true_color":
+                mat = make_true_color_material(f"m_{idx}_{name}", spec["faces"].get(name),
+                                               (spec.get("shade") or {}).get(name, 1.0))
+            else:
+                mat = make_material(f"m_{idx}_{name}", spec["faces"].get(name), spec.get("finish", "matte"), mask)
         me.materials.append(mat)
     bev = ob.modifiers.new("bevel", "BEVEL")
     bev.width = 0.3 * MM  # 0.3 mm board edge
@@ -478,7 +508,9 @@ def main(job_path):
     hero = 0
     k = 1.0
     cal = {"method": "none"}
-    if specs[hero]["faces"].get("front"):
+    if all(sp.get("finish") == "true_color" for sp in specs):
+        cal = {"method": "none: true colour (faces show the file's colours 1:1)"}
+    elif specs[hero]["faces"].get("front"):
         # 1. calibration render with the real artwork, small
         scene, boxes, cam, key, fill = build(True)
         scene.cycles.samples = 32

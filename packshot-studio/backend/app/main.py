@@ -45,7 +45,7 @@ def options():
         "icc_profiles": {k: v[0] for k, v in raster.PROFILES.items()},
         "views": {k: tasks.VIEW_LABELS[k] for k in tasks.VIEWS},
         "aspects": list(export.ASPECTS) + ["custom"],
-        "finishes": ["matte", "gloss", "soft_touch"],
+        "finishes": ["true_color", "matte", "gloss", "soft_touch"],
         "roles": ["front", "back", "left", "right", "top", "bottom", "glue_flap", "tuck_flap_top",
                   "tuck_flap_bottom", "dust_flap", "inner_flap", "ignore"],
         "default_scene": tasks.DEFAULT_SCENE,

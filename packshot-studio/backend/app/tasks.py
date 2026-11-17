@@ -206,7 +206,8 @@ def build_job(p: dict, scene: dict, view: str, out_png: Path, meta_json: Path) -
         "boxes": boxes,
         "camera": {"azimuth": az, "elevation": el, "focal": float(scene["focal"]), "fill": float(scene["fill"]),
                    "anchor": scene.get("anchor") or [0, 0], "top_down": view == "top_down"},
-        "light": {"front_gain": float(scene.get("front_gain", 0.93)), "key_side": scene.get("key_side", "auto")},
+        "light": {"front_gain": 1.0 if scene["finish"] == "true_color" else float(scene.get("front_gain", 0.93)),
+                  "key_side": scene.get("key_side", "auto")},
         "shadow": bool(scene["shadow"]),
         "width": w, "height": h, "samples": int(samples),
         "out": str(out_png), "meta_out": str(meta_json),
@@ -271,7 +272,8 @@ def render_job(pid: str, rid: str) -> None:
             write_record(pid, rid, rec)
             meta = json.loads(meta_json.read_text())
             faces_src = job["boxes"][0]["faces"]
-            report = verify.verify(out_png, meta, faces_src, job["shadow"], d / f"{view}_verify.png")
+            report = verify.verify(out_png, meta, faces_src, job["shadow"], d / f"{view}_verify.png",
+                                   expected_front=job["light"]["front_gain"])
             files = export.write_outputs(out_png, d, scene.get("title") or p["meta"]["source_name"], VIEW_LABELS[view], scene["formats"],
                                          scene["background"], scene["jpg_background"], scene["pdf_info_strip"], info)
             thumb = Image.open(out_png)

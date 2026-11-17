@@ -147,7 +147,7 @@ export default function SceneSetup({ project, options, library, onChange, onRend
             <select value={scene.finish} onChange={(e) => set("finish", e.target.value)}>
               {options.finishes.map((f) => (
                 <option key={f} value={f}>
-                  {{ matte: "Matte varnish", gloss: "Gloss varnish", soft_touch: "Soft-touch" }[f]}
+                  {({ true_color: "1:1 colour (exact file colours, no light effects)", matte: "Matte varnish", gloss: "Gloss varnish", soft_touch: "Soft-touch" } as Record<string, string>)[f]}
                 </option>
               ))}
             </select>

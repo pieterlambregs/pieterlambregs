@@ -1,8 +1,12 @@
 """Rasterise the print file and convert colour with a real ICC transform.
 
-The page is rendered by MuPDF into DeviceCMYK (spot colours go through their alternate
-space), then converted to sRGB with LittleCMS through the selected press profile. No other
-change is made to the pixels.
+Each colour keeps its own colour space until the single conversion to sRGB:
+* CMYK (and spot colours through their CMYK alternate) is converted with the selected press
+  profile (default ISO Coated v2 / FOGRA39). The profile is set as the document's output
+  intent, which MuPDF uses for all device CMYK.
+* RGB artwork (DeviceRGB / ICC-based RGB) is converted from its own profile to sRGB and is
+  never sent through CMYK, so RGB colours are not shifted by a double conversion.
+No other change is made to the pixels.
 """
 from __future__ import annotations
 
@@ -56,6 +60,22 @@ def hide_layers(doc: pymupdf.Document, hidden_names: set[str]) -> None:
             doc.set_layer_ui_config(cfg["number"], action=2)
 
 
+def prepare(doc: pymupdf.Document, profile: str = "FOGRA39") -> pymupdf.Document:
+    """Return a copy of the document whose output intent is the selected press profile.
+
+    Call this before switching layers off (reopening resets the layer view)."""
+    data = (ICC_DIR / PROFILES[profile][1]).read_bytes()
+    out = pymupdf.open("pdf", doc.tobytes())
+    x = out.get_new_xref()
+    out.update_object(x, "<< /N 4 >>")
+    out.update_stream(x, data)
+    oi = out.get_new_xref()
+    out.update_object(oi, f"<< /Type /OutputIntent /S /GTS_PDFX /OutputConditionIdentifier ({profile}) "
+                          f"/DestOutputProfile {x} 0 R >>")
+    out.xref_set_key(out.pdf_catalog(), "OutputIntents", f"[{oi} 0 R]")
+    return pymupdf.open("pdf", out.tobytes())
+
+
 def render_region_cmyk(page: pymupdf.Page, rect_mm: tuple[float, float, float, float], dpi: int) -> Image.Image:
     x0, y0, x1, y1 = rect_mm
     clip = pymupdf.Rect(x0 * MM_TO_PT, y0 * MM_TO_PT, x1 * MM_TO_PT, y1 * MM_TO_PT)
@@ -65,7 +85,13 @@ def render_region_cmyk(page: pymupdf.Page, rect_mm: tuple[float, float, float, f
 
 
 def render_region_srgb(page, rect_mm, dpi, profile="FOGRA39", intent="relative", bpc=True) -> Image.Image:
-    return cmyk_to_srgb(render_region_cmyk(page, rect_mm, dpi), profile, intent, bpc)
+    """Render straight to sRGB. The page must come from a document made with prepare(), so
+    that CMYK uses the press profile; RGB content keeps its own colours."""
+    x0, y0, x1, y1 = rect_mm
+    clip = pymupdf.Rect(x0 * MM_TO_PT, y0 * MM_TO_PT, x1 * MM_TO_PT, y1 * MM_TO_PT)
+    zoom = dpi / 72.0
+    pix = page.get_pixmap(matrix=pymupdf.Matrix(zoom, zoom), clip=clip, colorspace=pymupdf.csRGB, alpha=False)
+    return Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
 
 
 def render_page_srgb(page, dpi, profile="FOGRA39", intent="relative", bpc=True) -> Image.Image:

@@ -11,6 +11,7 @@ const VIEWS: Record<string, [number, number]> = {
   hero: [28, 24],
 };
 const FINISH: Record<string, { roughness: number; clearcoat: number; sheen: number }> = {
+  true_color: { roughness: 1, clearcoat: 0, sheen: 0 },
   matte: { roughness: 0.7, clearcoat: 0, sheen: 0 },
   gloss: { roughness: 0.3, clearcoat: 0.85, sheen: 0 },
   soft_touch: { roughness: 0.85, clearcoat: 0, sheen: 0.25 },
@@ -54,6 +55,16 @@ export default function Preview3D({ boxes, scene, view, width = 520 }: { boxes: 
       const roleFor = ["right", "left", "top", "bottom", "front", "back"];
       const mats = roleFor.map((role) => {
         const pid = p.faces?.[role];
+        if (scene.finish === "true_color") {
+          const mb = new THREE.MeshBasicMaterial({ color: pid ? 0xffffff : 0xe8e8e8 }); // unlit: file colours 1:1
+          if (pid && p.panels?.[pid]) {
+            const t = loader.load(fileUrl(p.id, p.panels[pid].preview, p.created));
+            t.colorSpace = THREE.SRGBColorSpace;
+            t.anisotropy = 8;
+            mb.map = t;
+          }
+          return mb;
+        }
         const m = new THREE.MeshPhysicalMaterial({
           color: pid ? 0xffffff : 0xe8e8e8,
           roughness: fin.roughness,

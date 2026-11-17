@@ -207,7 +207,8 @@ def background_check(render_rgba: np.ndarray, boxes_meta: list[dict], shadow_ena
     }
 
 
-def verify(render_path, meta: dict, faces_src: dict[str, str], shadow_enabled: bool, report_img_path) -> dict:
+def verify(render_path, meta: dict, faces_src: dict[str, str], shadow_enabled: bool, report_img_path,
+           expected_front: float = 0.93) -> dict:
     rgba = np.asarray(Image.open(render_path).convert("RGBA"))
     hero = meta["boxes"][0]
     result = {"faces": {}, "checks": [], "thresholds": THRESHOLDS}
@@ -251,7 +252,10 @@ def verify(render_path, meta: dict, faces_src: dict[str, str], shadow_enabled: b
         detail = f"front {b * 100:.0f}% of the file" if b else "n/a"
         if side and side[0]:
             detail += f", visible side {side[0] * 100:.0f}%"
-        ok = b is not None and 0.88 <= b <= 0.98 and (not side or side[0] is None or side[0] < b - 0.05)
+        if expected_front >= 0.99:  # true colour: every face must show the file's brightness
+            ok = b is not None and abs(b - 1.0) <= 0.02
+        else:
+            ok = b is not None and abs(b - expected_front) <= 0.05 and (not side or side[0] is None or side[0] < b - 0.05)
         result["checks"].append({"name": "Lighting", "status": "pass" if ok else "warn", "detail": detail})
     else:
         result["checks"].append({"name": "Front structure (text and positions)", "status": "skipped",

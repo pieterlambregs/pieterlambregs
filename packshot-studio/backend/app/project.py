@@ -129,7 +129,8 @@ def analyse(pid: str, role_overrides: dict | None = None, force_rotation: int | 
     images = pi.placed_images(page)
 
     # Preview of the original sheet (dieline visible) for the overlay.
-    sheet = raster.render_page_srgb(page, PREVIEW_DPI, p["settings"]["icc_profile"], p["settings"]["intent"])
+    sheet = raster.render_page_srgb(raster.prepare(doc, p["settings"]["icc_profile"])[0], PREVIEW_DPI,
+                                    p["settings"]["icc_profile"], p["settings"]["intent"])
     sheet.save(d / "sheet.png")
 
     clean_report = pi.build_clean_pdf(str(src), str(d / "clean.pdf"), info)
@@ -316,7 +317,7 @@ def _dieline_colour(p: dict, a: dict):
     segs = [sg for sg in a["segments"] if not sg[5] and ((sg[2] - sg[0]) ** 2 + (sg[3] - sg[1]) ** 2) ** 0.5 > 10]
     if not segs:
         return None
-    doc = pymupdf.open(_source_pdf(p))
+    doc = raster.prepare(pymupdf.open(_source_pdf(p)), p["settings"]["icc_profile"])
     page = doc[0]
     vals = []
     step = max(1, len(segs) // 15)
@@ -335,7 +336,7 @@ def extract_panels(pid: str, dpi: int | None = None) -> dict:
     dpi = int(dpi or p["settings"].get("dpi", 600))
     dpi = max(600, dpi)
     a = p["analysis"]
-    doc = pymupdf.open(d / "clean.pdf")
+    doc = raster.prepare(pymupdf.open(d / "clean.pdf"), p["settings"]["icc_profile"])
     raster.hide_layers(doc, set(a["hidden_layers"]))
     page = doc[0]
     inset = 0.0 if a["removed_at_source"] else max(0.1, a["line_width_mm"] / 2 + 0.08)
