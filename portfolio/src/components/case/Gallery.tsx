@@ -21,7 +21,7 @@ export function Gallery({ blocks }: { blocks: GalleryBlock[] }) {
             return (
               <RevealBlock key={i}>
                 <figure>
-                  <MediaView media={block.media} sizes="100vw" parallax={false} />
+                  <MediaView media={block.media} sizes="100vw" parallax={false} playable />
                   <Caption>{block.caption}</Caption>
                 </figure>
               </RevealBlock>
@@ -30,7 +30,7 @@ export function Gallery({ blocks }: { blocks: GalleryBlock[] }) {
             return (
               <RevealBlock key={i} className="grid-12">
                 <figure className="col-span-12 md:col-span-8 md:col-start-3">
-                  <MediaView media={block.media} sizes="(min-width: 768px) 66vw, 100vw" parallax={false} />
+                  <MediaView media={block.media} sizes="(min-width: 768px) 66vw, 100vw" parallax={false} playable />
                   <Caption>{block.caption}</Caption>
                 </figure>
               </RevealBlock>

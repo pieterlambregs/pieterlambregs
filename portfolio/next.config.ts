@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Static export: `npm run build` writes plain HTML/CSS/JS to `out/`, which
+  // is what gets uploaded to shared hosting (one.com). No Node server needed.
+  output: "export",
+  // /work -> /work/index.html, so Apache serves every route without rewrites.
+  trailingSlash: true,
   turbopack: {
     rules: {
       "*.css": {
@@ -10,8 +15,8 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
-    formats: ["image/avif", "image/webp"],
-    deviceSizes: [640, 828, 1080, 1280, 1600, 1920, 2400],
+    // No image server on static hosting: the WebP files in /public are served as-is.
+    unoptimized: true,
   },
 };
 

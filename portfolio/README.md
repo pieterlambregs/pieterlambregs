@@ -6,8 +6,7 @@ Motion, Lenis and React Three Fiber.
 ```bash
 npm install
 npm run dev      # http://localhost:3000
-npm run build    # production build
-npm run start    # serve the production build
+npm run build    # static export to out/ (upload this folder to one.com)
 npm run lint
 ```
 
@@ -43,8 +42,8 @@ instead, set `showPlaceholders: false` in `src/content/site.ts`.
 
 - Set `site.url` in `src/content/site.ts` to the production domain.
 - Check every row of `about.experience` and the dates in `projects.ts`.
-- Write the missing case study sections and add the motion reel
-  (`public/work/motion-reel/`), or turn placeholders off.
+- Write the missing case study sections (placeholders are currently off, so
+  unfinished sections are hidden).
 
 ## Structure
 
