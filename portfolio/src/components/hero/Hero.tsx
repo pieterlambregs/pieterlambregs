@@ -114,7 +114,7 @@ export function Hero() {
             </p>
           </div>
           <p
-            className="intro-fade col-span-12 max-w-[46ch] text-[0.9375rem] leading-[1.5] text-muted md:col-span-5 md:col-start-6 lg:col-span-4 lg:col-start-6"
+            className="intro-fade col-span-12 max-w-[46ch] text-small text-muted md:col-span-5 md:col-start-6 lg:col-span-4 lg:col-start-6"
             style={{ "--d": "620ms" } as React.CSSProperties}
           >
             {site.intro}

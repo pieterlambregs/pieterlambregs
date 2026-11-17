@@ -2,8 +2,9 @@
 
 import { motion, useInView, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react";
 import { useRef, type ElementType, type ReactNode } from "react";
+import { EASE_OUT } from "@/lib/motion";
 
-const EASE = [0.16, 1, 0.3, 1] as const;
+const EASE = EASE_OUT;
 
 /**
  * Headline whose lines rise out of a mask the first time they scroll into

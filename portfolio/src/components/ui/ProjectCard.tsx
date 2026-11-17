@@ -1,6 +1,7 @@
 import { MediaView } from "@/components/ui/MediaView";
 import { TransitionLink } from "@/components/ui/TransitionLink";
-import { getCategory, type Project } from "@/content/projects";
+import { CategoryTag } from "@/components/ui/CategoryTag";
+import type { Project } from "@/content/projects";
 
 const ratios = { wide: "16 / 9", landscape: "4 / 3", portrait: "4 / 5" } as const;
 
@@ -18,7 +19,6 @@ export function ProjectCard({
   priority?: boolean;
   compact?: boolean;
 }) {
-  const category = getCategory(project.category);
   return (
     <article>
       <TransitionLink
@@ -36,9 +36,7 @@ export function ProjectCard({
           />
         </div>
         <div className="mt-4 flex items-baseline justify-between gap-4 border-t border-line pt-3">
-          <p className="label text-muted">
-            <span className="text-accent">{category.index}</span> {category.name}
-          </p>
+          <CategoryTag id={project.category} />
           <p className="label shrink-0 tabular-nums text-muted">{project.year}</p>
         </div>
         <h3
@@ -48,7 +46,7 @@ export function ProjectCard({
         </h3>
         <p className="label mt-3 text-muted">{project.discipline}</p>
         {!compact && (
-          <p className="mt-3 max-w-[52ch] text-[0.9375rem] leading-[1.5] text-muted">{project.summary}</p>
+          <p className="mt-3 max-w-[52ch] text-small text-muted">{project.summary}</p>
         )}
       </TransitionLink>
     </article>

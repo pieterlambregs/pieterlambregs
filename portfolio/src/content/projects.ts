@@ -48,6 +48,12 @@ export const categories = [
     name: "UI / UX",
     description: "Digital interfaces, user experiences, prototypes and interactive products.",
   },
+  {
+    id: "ai",
+    index: "07",
+    name: "AI content creation",
+    description: "AI-generated imagery, mockups and scenes, directed from my own designs.",
+  },
 ] as const;
 
 export type CategoryId = (typeof categories)[number]["id"];
@@ -134,8 +140,10 @@ export const projects: Project[] = [
     story: {
       background:
         "My job was to create and develop print materials and web assets for the Benelux market with the Impermo branding guidelines in mind: from product displays, logos, magazines, catalogues, banners, packaging and window stickers to 2D and 3D animations, instruction videos, newsletters, web banners, product images and presentations.",
-      strategy: undefined,
-      concept: undefined,
+      strategy:
+        "One identity, many formats. Every piece follows the same Impermo guidelines, from a window sticker to a 3D animation, so a customer meets one brand in the showroom, in the letterbox and online.",
+      concept:
+        "The garden catalogue sets the tone: full-page product photography, Dutch and French side by side, and restrained typography that leaves the tiles to do the talking.",
     },
     exploration: [
       {
@@ -204,9 +212,12 @@ export const projects: Project[] = [
       { label: "Location", value: "Leuven" },
     ],
     story: {
-      background: undefined,
-      strategy: undefined,
-      concept: undefined,
+      background:
+        "Covas Immo sells and lets homes and commercial property in and around Leuven. The identity had to read as quickly on a shop window as on a printed listing.",
+      strategy:
+        "Build everything from one mark. The CV monogram, a soft mint and a near-black carry every application, so a poster, a scooter and a billboard are recognisably the same agency without repeating the full logo.",
+      concept:
+        "Leuven is part of the brand. The city’s gates are drawn as a map in the identity’s mint, and the line under the logo places the agency “in en rond Leuven”.",
     },
     exploration: [
       {
@@ -272,9 +283,12 @@ export const projects: Project[] = [
       { label: "Published", value: "2024" },
     ],
     story: {
-      background: undefined,
-      strategy: undefined,
-      concept: undefined,
+      background:
+        "Rave and Ride is self-initiated work: an identity with no client and no brief, made to push a louder visual language than client work usually allows.",
+      strategy:
+        "Three fixed elements: the chrome RR mark, one acid green and stacked, overprinted type. Everything else is free to change from poster to poster.",
+      concept:
+        "Classical statues and an astronaut share the frame with barcodes and club lettering. The series is shown as street posters and as a framed print set.",
     },
     exploration: [
       {
@@ -338,8 +352,10 @@ export const projects: Project[] = [
     story: {
       background:
         "The brief stayed constant while the products changed: publish every communication on time and on brand, lay out each piece for print, coordinate translations where a market needed them, supply photography for the company’s websites and keep an archive of all European projects.",
-      strategy: undefined,
-      concept: undefined,
+      strategy:
+        "Consistency across markets. One corporate image applied to every advertisement, brochure and roll-up, then translated and prepared for print market by market.",
+      concept:
+        "The product is the hero. The BlueLink key visual holds the sprayer in two hands against a circuit-board blue, and the same image scales from a poster to a tall banner.",
     },
     exploration: [
       {
@@ -366,34 +382,36 @@ export const projects: Project[] = [
     source: { label: "Product campaign on Behance", href: "https://www.behance.net/gallery/150654067/Product-campaign-by-ArtLab" },
   },
   {
-    slug: "motion-reel",
-    title: "Motion reel",
-    client: "Selected clients",
+    slug: "motion-video",
+    title: "Motion & video",
+    client: "Impermo, Banx, Covas Immo",
     category: "motion",
-    year: "2026",
+    year: "2020 – 2024",
     discipline: "Motion graphics & video",
     summary:
-      "2D and 3D animation, in-app stories, instruction videos and campaign edits, collected in one reel.",
+      "2D and 3D animation, instruction videos, in-app stories and animated brand assets, made alongside the print and digital work.",
     cover: {
-      type: "pending",
-      width: 1600,
-      height: 900,
-      alt: "Motion reel, footage to be added",
-      note: "Reel footage to be added",
+      type: "video",
+      src: "/work/covas-immo/livery.mp4",
+      width: 1400,
+      height: 788,
+      alt: "Turnaround of a car with the Covas Immo monogram livery",
     },
     cardShape: "portrait",
     overview:
-      "Motion runs through most of the work on this site: animations and instruction videos for Impermo, in-app stories for Banx and animated visuals for consulting clients. This page is reserved for the reel that brings them together.",
+      "Motion runs through most of the work on this site. For Impermo I made 2D and 3D animations and instruction videos; for Banx, three to four in-app stories a week in Dutch and French; for consulting clients, animated visuals for pitches.",
     role: "Motion design & editing",
-    deliverables: ["2D animation", "3D animation", "In-app stories", "Instruction videos", "Campaign edits"],
+    deliverables: ["2D animation", "3D animation", "In-app stories", "Instruction videos", "Animated brand assets"],
     tools: ["After Effects", "Premiere Pro"],
     credits: [
-      { label: "Format", value: "Showreel" },
-      { label: "Status", value: "In the edit" },
+      { label: "Clients", value: "Impermo, Belfius Banx, Covas Immo" },
+      { label: "Formats", value: "Web, app, social, presentation" },
     ],
     story: {
-      background: undefined,
-      strategy: undefined,
+      background:
+        "A still image explains what a product is. Motion explains how it works, which is why instruction videos and in-app stories sat next to the catalogues and landing pages.",
+      strategy:
+        "Motion follows the identity, never the other way round: the same colours, type and imagery as the static work, set in time.",
       concept: undefined,
     },
     exploration: [],
@@ -401,12 +419,13 @@ export const projects: Project[] = [
       {
         layout: "full",
         media: {
-          type: "pending",
-          width: 1600,
-          height: 900,
-          alt: "Motion reel, footage to be added",
-          note: "Add the reel: /public/work/motion-reel/reel.mp4",
+          type: "video",
+          src: "/work/covas-immo/livery.mp4",
+          width: 1400,
+          height: 788,
+          alt: "Turnaround of a car with the Covas Immo monogram livery",
         },
+        caption: "Covas Immo: vehicle livery turnaround.",
       },
     ],
     source: { label: "YouTube channel", href: "https://www.youtube.com/channel/UCzN-hm9fPv8sWuL1PVWPYkQ" },
@@ -442,8 +461,10 @@ export const projects: Project[] = [
     story: {
       background:
         "Banx lives in two places at once, a website and a banking app, and speaks two languages. The work covered both: interface design and prototypes for the product, three promotional landing pages for web and app, and three to four in-app stories every week in Dutch and French.",
-      strategy: undefined,
-      concept: undefined,
+      strategy:
+        "Design inside two brands. Every screen and story was aligned with the Proximus marketing team, so it fits the brand image while meeting usability and web standards.",
+      concept:
+        "A weekly rhythm. Three to four in-app stories a week keep the app current, while three promotional landing pages carry the campaigns on web and in the app.",
     },
     exploration: [],
     execution: [
@@ -456,6 +477,87 @@ export const projects: Project[] = [
         layout: "full",
         media: img("/work/belfius-banx/01.webp", 2000, 1333, "Five phones showing Banx app screens in different colour themes"),
         caption: "Colour themes across the app.",
+      },
+    ],
+  },
+  {
+    slug: "hive",
+    title: "Hive",
+    client: "Hive",
+    category: "brand",
+    year: "Archive",
+    discipline: "Logo & wordmark",
+    summary:
+      "A wordmark drawn from parallel vertical strokes and set inside a hexagon, in four lockups and three colourways.",
+    cover: img("/work/hive/01.webp", 2576, 2553, "Hive logo in four lockups, shown in black on yellow, yellow on dark and white on a city photograph"),
+    cardShape: "landscape",
+    overview:
+      "A logo system for Hive. The four letters are built from the same vertical stroke, so the word closes into a hexagon, the cell of a honeycomb, without drawing a bee.",
+    role: "Logo design",
+    deliverables: ["Wordmark", "Hexagon silhouette lockup", "Outlined hexagon lockup", "Solid hexagon lockup", "Three colourways"],
+    tools: ["Illustrator", "Photoshop"],
+    credits: [
+      { label: "Project", value: "Hive" },
+      { label: "Scope", value: "Logo system" },
+    ],
+    story: {
+      background: undefined,
+      strategy:
+        "One wordmark, four lockups: free-standing, cut to a hexagon silhouette, framed by an outline and reversed out of a solid shape. Each one stays legible when it shrinks.",
+      concept:
+        "Three colourways, black on yellow, yellow on dark and white on photography, are tested over busy street scenes, where a logo has to hold its own.",
+    },
+    exploration: [],
+    execution: [
+      {
+        layout: "trio",
+        media: [
+          img("/work/hive/02.webp", 859, 2553, "Hive lockups in black on a yellow ground"),
+          img("/work/hive/03.webp", 859, 2553, "Hive lockups in yellow on a dark street photograph"),
+          img("/work/hive/04.webp", 858, 2553, "Hive lockups in white on a night-time city photograph"),
+        ],
+      },
+      {
+        layout: "inset",
+        media: img("/work/hive/01.webp", 2576, 2553, "Overview of all Hive lockups and colourways"),
+      },
+    ],
+  },
+  {
+    slug: "ai-content",
+    title: "AI content creation",
+    client: "Self-initiated",
+    category: "ai",
+    year: "Ongoing",
+    discipline: "AI-generated imagery",
+    summary:
+      "My own sticker designs, placed in a photoreal scene with Adobe Firefly: weathered, cracked and stuck to a rusted pipe.",
+    cover: img("/work/ai-content/01.webp", 1024, 1024, "Two weathered stickers, Space Kadet and Rave Ride, on a rusted metal pipe. AI-generated image."),
+    cardShape: "portrait",
+    overview:
+      "Generative AI is good at the part of a visual that used to need a location, a prop and a photographer. I bring the design; the tool builds the world around it.",
+    role: "Design, art direction & prompting",
+    deliverables: ["Sticker artwork", "AI-generated scene", "Mockup imagery"],
+    tools: ["Adobe Firefly", "Illustrator", "Photoshop"],
+    credits: [
+      { label: "Type", value: "Self-initiated" },
+      { label: "Method", value: "Own artwork as reference, scene generated with AI" },
+      { label: "Disclosure", value: "The image on this page is AI-generated" },
+    ],
+    story: {
+      background:
+        "A sticker is designed flat, but it lives outdoors. Showing that used to mean printing it, sticking it somewhere and coming back months later with a camera.",
+      strategy:
+        "Start from real artwork. The two stickers, Space Kadet and Rave Ride, are my own designs and go in as reference images, so the result is a picture of my work and not something the model made up.",
+      concept:
+        "The prompt asks for a close-up of old, weathered stickers. Firefly adds what time would have added: cracks, peeling edges, rust creeping in from the metal underneath.",
+    },
+    exploration: [],
+    execution: [
+      {
+        layout: "inset",
+        media: img("/work/ai-content/01.webp", 1024, 1024, "Two weathered stickers, Space Kadet and Rave Ride, on a rusted metal pipe. AI-generated image."),
+        caption: "AI-generated with Adobe Firefly from my own sticker designs.",
       },
     ],
   },

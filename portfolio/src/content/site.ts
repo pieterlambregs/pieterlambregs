@@ -25,7 +25,7 @@ export const site = {
    * marked placeholders. Set to false to hide every unfinished section
    * instead (the rest of the page closes up around them).
    */
-  showPlaceholders: true,
+  showPlaceholders: false,
 } as const;
 
 export const nav = [
@@ -136,13 +136,51 @@ export const expertise: Discipline[] = [
     preview: { type: "image", src: "/work/belfius-banx/02.webp", alt: "Banx banking app home screen" },
   },
   {
+    name: "AI content creation",
+    description:
+      "AI-generated imagery, mockups and scenes built around my own designs, directed by prompt and always labelled.",
+    keywords: ["Adobe Firefly", "Prompting", "Mockups"],
+    preview: {
+      type: "image",
+      src: "/work/ai-content/01.webp",
+      alt: "AI-generated image of weathered stickers on a rusted pipe",
+    },
+  },
+  {
     name: "Creative technology",
     description:
-      "Generative AI, creative code and new tools, explored early and put to work where they make the result better.",
-    keywords: ["Generative AI", "Creative code", "Experiments"],
+      "Creative code, prototyping and new tools, explored early and put to work where they make the result better.",
+    keywords: ["Creative code", "Prototyping", "Experiments"],
     preview: { type: "image", src: "/work/rave-and-ride/03.webp", alt: "Rave and Ride poster in a frame" },
   },
 ];
+
+export const ai = {
+  headline: ["My design.", "AI builds the scene."],
+  body: "I use generative AI the way I use a camera or a 3D renderer: to get an idea in front of people faster. The artwork, the direction and the final call stay with me.",
+  points: [
+    {
+      name: "Own artwork in",
+      body: "My designs go in as reference, so the result shows real work in a new setting.",
+    },
+    {
+      name: "Briefed like a shoot",
+      body: "A prompt is a brief. I write it the way I would brief a photographer: subject, light, material, mood.",
+    },
+    {
+      name: "Always labelled",
+      body: "AI-generated images on this site are marked as such.",
+    },
+  ],
+  image: {
+    src: "/work/ai-content/01.webp",
+    width: 1024,
+    height: 1024,
+    alt: "Two weathered stickers, Space Kadet and Rave Ride, on a rusted metal pipe. AI-generated image.",
+    credit: "AI-generated with Adobe Firefly from my own sticker designs",
+  },
+  href: "/work/ai-content",
+};
 
 export const process = [
   {
@@ -171,6 +209,14 @@ export const contact = {
   headline: ["Have an idea?", "Let’s make it", "happen."],
   body: "Have a project, a challenge or an interesting idea? I’d love to hear about it. Let’s explore what we can create together.",
 };
+
+/** Pages listed in the footer. */
+export const pages = [
+  { label: "Work", href: "/work" },
+  { label: "About", href: "/about" },
+  { label: "AI content creation", href: "/work/ai-content" },
+  { label: "Contact", href: "/contact" },
+] as const;
 
 export const footer = {
   line: "Independent creative thinking. Multidisciplinary design.",

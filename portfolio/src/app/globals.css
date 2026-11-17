@@ -50,6 +50,10 @@
   --font-sans: var(--font-geist-sans), "Neue Montreal", "Helvetica Neue", Arial, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, monospace;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.45;
+  --text-small: 0.9375rem;
+  --text-small--line-height: 1.5;
   --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
 }
 
@@ -117,6 +121,11 @@ html.lenis body {
 
 @utility gutter {
   padding-inline: var(--gutter);
+}
+
+/* Vertical padding of a full home-page section. */
+@utility section-y {
+  padding-block: clamp(6rem, 12vw, 11rem);
 }
 
 @utility grid-12 {

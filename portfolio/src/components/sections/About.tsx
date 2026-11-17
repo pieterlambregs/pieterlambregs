@@ -1,31 +1,31 @@
 import { RevealBlock, RevealLines } from "@/components/ui/Reveal";
+import { FactList } from "@/components/ui/FactList";
 import { about } from "@/content/site";
 
-export function About() {
+export function About({ as = "h2" }: { as?: "h1" | "h2" }) {
   const [lead, ...rest] = about.paragraphs;
   return (
-    <section id="about" className="gutter border-t border-line py-[clamp(6rem,12vw,11rem)]">
-      <RevealLines lines={about.headline} className="display text-[clamp(2.5rem,9.4vw,12rem)]" />
+    <section
+      id="about"
+      className={`gutter section-y ${as === "h1" ? "pt-[clamp(7rem,16vh,11rem)]" : "border-t border-line"}`}
+    >
+      <RevealLines as={as} lines={about.headline} className="display text-[clamp(2.5rem,9.4vw,12rem)]" />
 
       <div className="grid-12 mt-[clamp(3.5rem,8vw,8rem)] gap-y-16">
         <div className="col-span-12 lg:col-span-6">
           <RevealBlock>
             <p className="text-[clamp(1.5rem,2.5vw,2.5rem)] font-medium leading-[1.14] tracking-[-0.03em]">{lead}</p>
           </RevealBlock>
-          <RevealBlock delay={0.1} className="mt-10 max-w-[58ch] space-y-5 text-[1.0625rem] leading-[1.55] text-muted">
+          <RevealBlock delay={0.1} className="mt-10 max-w-[58ch] space-y-5 text-body leading-[1.55] text-muted">
             {rest.map((p) => (
               <p key={p}>{p}</p>
             ))}
           </RevealBlock>
 
-          <dl className="mt-14 grid grid-cols-1 gap-x-8 border-t border-line sm:grid-cols-2">
-            {about.facts.map((fact) => (
-              <div key={fact.label} className="border-b border-line py-4">
-                <dt className="label text-muted">{fact.label}</dt>
-                <dd className="mt-1.5 text-[1.0625rem] leading-[1.35]">{fact.value}</dd>
-              </div>
-            ))}
-          </dl>
+          <FactList
+            facts={[...about.facts]}
+            className="mt-14 grid grid-cols-1 gap-x-8 border-t border-line sm:grid-cols-2"
+          />
         </div>
 
         <div className="col-span-12 lg:col-span-5 lg:col-start-8">
@@ -47,7 +47,7 @@ export function About() {
                       />
                     )}
                   </p>
-                  <p className="mt-1 text-[0.9375rem] text-muted">{job.role}</p>
+                  <p className="mt-1 text-small text-muted">{job.role}</p>
                 </div>
                 <p className="label tabular-nums text-muted">{job.period}</p>
               </li>

@@ -1,5 +1,6 @@
 import { Hero } from "@/components/hero/Hero";
 import { About } from "@/components/sections/About";
+import { AiCreation } from "@/components/sections/AiCreation";
 import { Contact } from "@/components/sections/Contact";
 import { Expertise } from "@/components/sections/Expertise";
 import { Philosophy } from "@/components/sections/Philosophy";
@@ -13,6 +14,7 @@ export default function Home() {
       <Philosophy />
       <Work />
       <Expertise />
+      <AiCreation />
       <About />
       <Process />
       <Contact />

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRef, useState, type PointerEvent } from "react";
 import { RevealLines } from "@/components/ui/Reveal";
 import { expertise, type Discipline } from "@/content/site";
+import { EASE_OUT } from "@/lib/motion";
 
 function Preview({ item }: { item: Discipline }) {
   return item.preview.type === "video" ? (
@@ -51,11 +52,11 @@ export function Expertise() {
   const current = active !== null ? expertise[active] : null;
 
   return (
-    <section id="expertise" className="gutter py-[clamp(6rem,12vw,11rem)]">
+    <section id="expertise" className="gutter section-y">
       <div className="grid-12 items-end gap-y-6">
         <RevealLines lines={["What I do."]} className="display col-span-12 text-[clamp(2.75rem,9vw,11rem)] lg:col-span-8" />
-        <p className="col-span-12 max-w-[40ch] text-[0.9375rem] leading-[1.5] text-muted lg:col-span-4 lg:pb-4">
-          Eight disciplines, one toolkit. Most projects need several of them at once, and that is where
+        <p className="col-span-12 max-w-[40ch] text-small text-muted lg:col-span-4 lg:pb-4">
+          Nine disciplines, one toolkit. Most projects need several of them at once, and that is where
           working across all of them pays off.
         </p>
       </div>
@@ -106,11 +107,11 @@ export function Expertise() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: reduced ? 0 : 0.5, ease: [0.16, 1, 0.3, 1] }}
+                      transition={{ duration: reduced ? 0 : 0.5, ease: EASE_OUT }}
                       className="overflow-hidden"
                     >
                       <div className="grid-12 gap-y-5 pb-7">
-                        <p className="col-span-12 max-w-[48ch] text-[1.0625rem] leading-[1.45] md:col-span-6 md:col-start-1 lg:col-span-5">
+                        <p className="col-span-12 max-w-[48ch] text-body md:col-span-6 md:col-start-1 lg:col-span-5">
                           {item.description}
                         </p>
                         <div className="relative col-span-8 aspect-[4/5] overflow-hidden bg-surface sm:col-span-5 md:hidden">
@@ -139,7 +140,7 @@ export function Expertise() {
               height: current && hovering ? 375 : 0,
               opacity: current && hovering ? 1 : 0,
             }}
-            transition={{ duration: reduced ? 0 : 0.55, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: reduced ? 0 : 0.55, ease: EASE_OUT }}
           >
             <AnimatePresence mode="popLayout">
               {current && (
@@ -149,7 +150,7 @@ export function Expertise() {
                   initial={{ opacity: 0, scale: 1.12 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: reduced ? 0 : 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{ duration: reduced ? 0 : 0.5, ease: EASE_OUT }}
                 >
                   <Preview item={current} />
                 </motion.div>

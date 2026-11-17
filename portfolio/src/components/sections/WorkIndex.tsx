@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useState } from "react";
 import { ProjectCard } from "@/components/ui/ProjectCard";
 import { categories, projects, type CategoryId } from "@/content/projects";
+import { EASE_OUT } from "@/lib/motion";
 
 /** The full archive, filterable by discipline. */
 export function WorkIndex() {
@@ -34,8 +35,8 @@ export function WorkIndex() {
             );
           })}
         </div>
-        <p className="col-span-12 max-w-[38ch] text-[0.9375rem] leading-[1.5] text-muted lg:col-span-4" aria-live="polite">
-          {active ? active.description : "Six disciplines, one portfolio. Pick one to narrow the list."}
+        <p className="col-span-12 max-w-[38ch] text-small text-muted lg:col-span-4" aria-live="polite">
+          {active ? active.description : "Seven disciplines, one portfolio. Pick one to narrow the list."}
         </p>
       </div>
 
@@ -48,7 +49,7 @@ export function WorkIndex() {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: reduced ? 0 : 0.6, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: reduced ? 0 : 0.6, ease: EASE_OUT }}
               className={`col-span-12 ${i % 2 === 0 ? "md:col-span-7" : "md:col-span-4 md:col-start-9 md:mt-[22%]"}`}
             >
               <ProjectCard

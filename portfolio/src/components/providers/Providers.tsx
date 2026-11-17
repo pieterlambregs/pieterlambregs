@@ -14,6 +14,7 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from "react";
+import { EASE_IN_OUT } from "@/lib/motion";
 
 /* ------------------------------------------------------------------ theme */
 
@@ -47,7 +48,7 @@ type Navigate = (href: string, label?: string) => void;
 const TransitionContext = createContext<Navigate>(() => {});
 export const usePageTransition = () => useContext(TransitionContext);
 
-const EASE = [0.76, 0, 0.24, 1] as const;
+const EASE = EASE_IN_OUT;
 
 function TransitionLayer({ children }: { children: ReactNode }) {
   const router = useRouter();

@@ -1,7 +1,6 @@
-import { Magnetic } from "@/components/ui/Magnetic";
+import { PillLink } from "@/components/ui/PillLink";
 import { ProjectCard } from "@/components/ui/ProjectCard";
 import { RevealBlock, RevealLines } from "@/components/ui/Reveal";
-import { TransitionLink } from "@/components/ui/TransitionLink";
 import { projects } from "@/content/projects";
 
 /**
@@ -19,7 +18,7 @@ const placements = [
 
 export function Work() {
   return (
-    <section id="work" className="gutter scroll-mt-0 py-[clamp(6rem,12vw,11rem)]">
+    <section id="work" className="gutter scroll-mt-0 section-y">
       <div className="grid-12 items-end gap-y-8">
         <RevealLines
           lines={["Selected work.", "Creative thinking.", "Real-world impact."]}
@@ -44,15 +43,9 @@ export function Work() {
       </div>
 
       <div className="mt-[clamp(4rem,8vw,8rem)] flex justify-center">
-        <Magnetic>
-          <TransitionLink
-            href="/work"
-            transitionLabel="All work"
-            className="label flex h-14 items-center rounded-full border border-line px-8 transition-[color,background-color,border-color,transform] duration-300 hover:border-fg hover:bg-fg hover:text-bg active:scale-[0.97]"
-          >
-            Browse all work by discipline
-          </TransitionLink>
-        </Magnetic>
+        <PillLink href="/work" transitionLabel="All work">
+          Browse all work by discipline
+        </PillLink>
       </div>
     </section>
   );

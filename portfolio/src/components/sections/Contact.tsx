@@ -2,11 +2,11 @@ import { Magnetic } from "@/components/ui/Magnetic";
 import { RevealBlock, RevealLines } from "@/components/ui/Reveal";
 import { contact, site, socials } from "@/content/site";
 
-export function Contact() {
+export function Contact({ as = "h2" }: { as?: "h1" | "h2" }) {
   return (
     <section id="contact" className="gutter relative overflow-hidden pb-[clamp(4rem,8vw,7rem)] pt-[clamp(6rem,13vw,12rem)]">
       <div className="relative">
-        <RevealLines lines={contact.headline} className="display text-[clamp(3rem,13.6vw,19rem)]" />
+        <RevealLines as={as} lines={contact.headline} className="display text-[clamp(3rem,13.6vw,19rem)]" />
 
         {/* The one big gesture on the page: a disc that leans toward the pointer. */}
         <div className="mt-10 md:absolute md:bottom-[0.06em] md:right-0 md:mt-0">
@@ -49,7 +49,7 @@ export function Contact() {
                   href={s.href}
                   target="_blank"
                   rel="noreferrer"
-                  className="link-draw inline-block py-2.5 text-[1.0625rem] leading-[1.35] md:py-0"
+                  className="link-draw inline-block py-2.5 text-body leading-[1.35] md:py-0"
                 >
                   {s.label}
                 </a>

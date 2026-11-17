@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { Gallery } from "@/components/case/Gallery";
+import { CategoryTag } from "@/components/ui/CategoryTag";
+import { FactList } from "@/components/ui/FactList";
 import { MediaView } from "@/components/ui/MediaView";
 import { ProjectCard } from "@/components/ui/ProjectCard";
 import { RevealBlock, RevealLines } from "@/components/ui/Reveal";
@@ -48,7 +50,7 @@ function Unwritten({ field }: { field: string }) {
   return (
     <div className="border border-dashed border-accent/60 p-5 sm:p-6">
       <p className="label text-accent">Placeholder · to be written</p>
-      <p className="mt-3 max-w-[52ch] text-[1.0625rem] leading-[1.5] text-muted">
+      <p className="mt-3 max-w-[52ch] text-body leading-[1.5] text-muted">
         This section is waiting for the real story. Add it in{" "}
         <code className="font-mono text-[0.875em] text-fg">src/content/projects.ts</code> under{" "}
         <code className="font-mono text-[0.875em] text-fg">{field}</code>.
@@ -100,9 +102,7 @@ export default async function CaseStudy({ params }: PageProps<"/work/[slug]">) {
       {/* 1–2. Introduction, title and category */}
       <header className="gutter flex min-h-[100svh] flex-col pt-[clamp(6rem,14vh,10rem)]">
         <div className="label intro-fade flex items-baseline justify-between text-muted">
-          <p>
-            <span className="text-accent">{category.index}</span> {category.name}
-          </p>
+          <CategoryTag id={project.category} />
           <p className="tabular-nums">
             {number} / {String(projects.length).padStart(2, "0")}
           </p>
@@ -118,18 +118,15 @@ export default async function CaseStudy({ params }: PageProps<"/work/[slug]">) {
           <p className="col-span-12 max-w-[34ch] text-[clamp(1.25rem,1.9vw,1.875rem)] font-medium leading-[1.2] tracking-[-0.02em] md:col-span-6">
             {project.summary}
           </p>
-          <dl className="col-span-12 grid grid-cols-2 gap-x-6 gap-y-5 md:col-span-5 md:col-start-8 lg:grid-cols-3">
-            {[
+          <FactList
+            size="small"
+            className="col-span-12 grid grid-cols-2 gap-x-6 border-t border-line md:col-span-5 md:col-start-8 lg:grid-cols-3"
+            facts={[
               { label: "Client", value: project.client },
               { label: "Year", value: project.year },
               { label: "Discipline", value: project.discipline },
-            ].map((fact) => (
-              <div key={fact.label} className="border-t border-line pt-3">
-                <dt className="label text-muted">{fact.label}</dt>
-                <dd className="mt-1.5 text-[0.9375rem] leading-[1.35]">{fact.value}</dd>
-              </div>
-            ))}
-          </dl>
+            ]}
+          />
         </div>
       </header>
 
@@ -195,18 +192,11 @@ export default async function CaseStudy({ params }: PageProps<"/work/[slug]">) {
           </div>
           <div className="col-span-12 md:col-span-5 md:col-start-8">
             <h2 className="label text-muted">Credits</h2>
-            <dl className="mt-5 border-t border-line">
-              {project.credits.map((c) => (
-                <div key={c.label} className="grid grid-cols-[7rem_1fr] gap-4 border-b border-line py-3">
-                  <dt className="label pt-1 text-muted">{c.label}</dt>
-                  <dd className="text-[1.0625rem] leading-[1.35]">{c.value}</dd>
-                </div>
-              ))}
-              <div className="grid grid-cols-[7rem_1fr] gap-4 border-b border-line py-3">
-                <dt className="label pt-1 text-muted">Tools</dt>
-                <dd className="text-[1.0625rem] leading-[1.35]">{project.tools.join(", ")}</dd>
-              </div>
-            </dl>
+            <FactList
+              variant="rows"
+              className="mt-5"
+              facts={[...project.credits, { label: "Tools", value: project.tools.join(", ") }]}
+            />
             {project.source && (
               <a
                 href={project.source.href}

@@ -7,8 +7,9 @@ import { nav, site, socials } from "@/content/site";
 import { useTheme } from "@/components/providers/Providers";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { TransitionLink } from "@/components/ui/TransitionLink";
+import { EASE_IN_OUT, EASE_OUT } from "@/lib/motion";
 
-const EASE = [0.76, 0, 0.24, 1] as const;
+const EASE = EASE_IN_OUT;
 
 function ThemeToggle() {
   const { theme, toggle } = useTheme();
@@ -138,7 +139,7 @@ export function Nav() {
                     <motion.div
                       initial={{ y: "110%" }}
                       animate={{ y: 0 }}
-                      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.25 + i * 0.06 }}
+                      transition={{ duration: 0.8, ease: EASE_OUT, delay: 0.25 + i * 0.06 }}
                     >
                       <TransitionLink
                         href={item.href}

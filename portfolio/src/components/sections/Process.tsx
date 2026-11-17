@@ -28,7 +28,7 @@ function Step({
       />
       <p className="label tabular-nums text-muted">{item.step}</p>
       <h3 className="display mt-4 text-[clamp(2.25rem,4.6vw,5rem)]">{item.name}</h3>
-      <p className="mt-4 max-w-[26ch] text-[1.0625rem] leading-[1.45] text-muted">{item.body}</p>
+      <p className="mt-4 max-w-[26ch] text-body text-muted">{item.body}</p>
     </motion.li>
   );
 }
@@ -40,13 +40,13 @@ export function Process() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.85", "end 0.6"] });
 
   return (
-    <section className="tone-flip gutter py-[clamp(6rem,12vw,11rem)]">
+    <section className="tone-flip gutter section-y">
       <div className="grid-12 items-end gap-y-6">
         <RevealLines
           lines={["From first question", "to final file."]}
           className="display col-span-12 text-[clamp(2.25rem,6.2vw,8rem)] lg:col-span-9"
         />
-        <p className="col-span-12 max-w-[36ch] text-[0.9375rem] leading-[1.5] text-muted lg:col-span-3 lg:pb-3">
+        <p className="col-span-12 max-w-[36ch] text-small text-muted lg:col-span-3 lg:pb-3">
           Every project is different. The way I work through one stays the same.
         </p>
       </div>
