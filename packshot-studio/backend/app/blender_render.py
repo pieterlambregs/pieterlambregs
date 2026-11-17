@@ -274,6 +274,10 @@ def setup_camera(scene, cam_spec, boxes, specs, width, height):
     az = math.radians(cam_spec.get("azimuth", 35.0))  # + = camera moves to the left of the front
     el = math.radians(cam_spec.get("elevation", 12.0))
     top_down = cam_spec.get("top_down", False) or cam_spec.get("elevation", 0) >= 89.5
+    cam_height = cam_spec.get("height_mm")
+    if cam_height is not None and not top_down:
+        cam_height = float(cam_height) * MM
+        el = 0.0  # horizontal distance only; the height is set explicitly
     # direction from the subject towards the camera
     d = Vector((-math.sin(az) * math.cos(el), -math.cos(az) * math.cos(el), math.sin(el)))
     if top_down:
@@ -292,6 +296,8 @@ def setup_camera(scene, cam_spec, boxes, specs, width, height):
     dist = radius * cam_data.lens / 36.0 * 2.2
     for _ in range(12):
         cam.location = center + d * dist
+        if cam_height is not None:  # fixed lens height (mm above the floor), camera stays level
+            cam.location.z = cam_height
         bpy.context.view_layer.update()
         inv = cam.matrix_world.inverted()
         us, vs = [], []

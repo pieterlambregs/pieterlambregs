@@ -41,6 +41,7 @@ DEFAULT_SCENE = {
     # Free composition (overrides group): the first entry is the hero box used for light
     # calibration and verification. [{"project": pid, "x": mm, "y": mm, "z": mm, "rotation": [rx, ry, rz]}]
     "arrangement": None,
+    "camera_height_mm": None,  # lens height above the floor; e.g. below the box tops = no top face visible
     "title": None,  # used instead of the source file name in output file names
 }
 PRESETS_FILE = P.DATA / "presets.json"
@@ -205,7 +206,8 @@ def build_job(p: dict, scene: dict, view: str, out_png: Path, meta_json: Path) -
     return {
         "boxes": boxes,
         "camera": {"azimuth": az, "elevation": el, "focal": float(scene["focal"]), "fill": float(scene["fill"]),
-                   "anchor": scene.get("anchor") or [0, 0], "top_down": view == "top_down"},
+                   "anchor": scene.get("anchor") or [0, 0], "top_down": view == "top_down",
+                   "height_mm": scene.get("camera_height_mm")},
         "light": {"front_gain": 1.0 if scene["finish"] == "true_color" else float(scene.get("front_gain", 0.93)),
                   "key_side": scene.get("key_side", "auto")},
         "shadow": bool(scene["shadow"]),
