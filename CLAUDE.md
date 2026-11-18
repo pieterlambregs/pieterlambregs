@@ -31,6 +31,7 @@ load these skills with the Skill tool:
 | `frontend-design` | Typography and visual choices on new sections. |
 | `impeccable` | Final polish: hierarchy, responsive, edge cases. |
 | `accessibility-review` | Contrast, focus, keyboard, reduced motion, before shipping. |
+| `gsap-*` (in `.claude/skills/`, official GreenSock skills) | Any GSAP work: start with `gsap-react` and `gsap-scrolltrigger`; `gsap-core`, `gsap-timeline`, `gsap-plugins`, `gsap-utils`, `gsap-performance` as needed. |
 
 ## Colour palette (chosen by Pieter, Nov 2026, not yet applied)
 
@@ -63,9 +64,20 @@ Contrast rules (WCAG AA), checked:
 - **React Three Fiber + drei + three**: the glass hero object (`hero/GlassScene.tsx`).
 - **Tailwind CSS 4**, Geist / Geist Mono fonts.
 
-Do not add a second animation library (GSAP, AOS, anime.js) unless a specific
-effect truly needs it; if so, say why first. Motion values over React state for
-scroll-linked effects. Animate transform and opacity only. Every effect must
+- **GSAP** (free, all plugins included; add with `npm i gsap @gsap/react`
+  when first needed): approved by Pieter for scroll storytelling.
+
+Division of labour, so the two never animate the same element:
+- Motion: component state, hovers, reveals, page transitions, layout.
+- GSAP: pinned and scrubbed ScrollTrigger timelines, SplitText headline
+  reveals, Flip and other sequences that Motion cannot do cleanly.
+- Use `useGSAP()` from `@gsap/react` (scoped, auto cleanup). Drive
+  ScrollTrigger from Lenis (`lenis.on("scroll", ScrollTrigger.update)` and
+  the GSAP ticker) so smooth scroll and triggers stay in sync.
+- Wrap GSAP effects in `gsap.matchMedia()` with a reduced-motion branch.
+
+No other animation libraries (AOS, anime.js, etc.). Motion values over React
+state for scroll-linked effects. Animate transform and opacity only. Every effect must
 respect `prefers-reduced-motion` and work on touch devices.
 
 ## Where things live
