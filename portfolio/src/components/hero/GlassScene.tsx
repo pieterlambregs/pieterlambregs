@@ -5,6 +5,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { mergeVertices } from "three/examples/jsm/utils/BufferGeometryUtils.js";
+import { asset } from "@/lib/asset";
 
 /** One line of the headline, measured from the DOM in CSS pixels. */
 export type LineSpec = {
@@ -79,7 +80,7 @@ function Line({
     <group position={[spec.x - size.width / 2, size.height / 2 - spec.cy, 0]} scale={scale}>
       <Text
         ref={text}
-        font="/fonts/geist-600.woff"
+        font={asset("/fonts/geist-600.woff")}
         fontSize={100}
         letterSpacing={-0.045}
         lineHeight={1}

@@ -5,12 +5,13 @@ import Image from "next/image";
 import { useRef, useState, type PointerEvent } from "react";
 import { RevealLines } from "@/components/ui/Reveal";
 import { expertise, type Discipline } from "@/content/site";
+import { asset } from "@/lib/asset";
 import { EASE_OUT } from "@/lib/motion";
 
 function Preview({ item }: { item: Discipline }) {
   return item.preview.type === "video" ? (
     <video
-      src={item.preview.src}
+      src={asset(item.preview.src)}
       aria-label={item.preview.alt}
       className="h-full w-full object-cover"
       autoPlay
@@ -19,7 +20,7 @@ function Preview({ item }: { item: Discipline }) {
       playsInline
     />
   ) : (
-    <Image src={item.preview.src} alt={item.preview.alt} fill sizes="320px" className="object-cover" />
+    <Image src={asset(item.preview.src)} alt={item.preview.alt} fill sizes="320px" className="object-cover" />
   );
 }
 

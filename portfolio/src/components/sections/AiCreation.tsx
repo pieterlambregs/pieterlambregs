@@ -3,6 +3,7 @@ import { PillLink } from "@/components/ui/PillLink";
 import { RevealLines } from "@/components/ui/Reveal";
 import { TransitionLink } from "@/components/ui/TransitionLink";
 import { ai } from "@/content/site";
+import { asset } from "@/lib/asset";
 
 /** How generative AI fits into the work, shown with one real example. */
 export function AiCreation() {
@@ -39,7 +40,7 @@ export function AiCreation() {
             className="group relative block aspect-square overflow-hidden bg-surface"
           >
             <Image
-              src={ai.image.src}
+              src={asset(ai.image.src)}
               alt={ai.image.alt}
               fill
               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 66vw, 100vw"

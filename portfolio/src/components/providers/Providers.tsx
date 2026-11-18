@@ -3,6 +3,7 @@
 import { ReactLenis, useLenis } from "lenis/react";
 import { animate, useReducedMotion } from "motion/react";
 import { usePathname, useRouter } from "next/navigation";
+import { basePath } from "@/lib/asset";
 import {
   createContext,
   useCallback,
@@ -101,7 +102,12 @@ function TransitionLayer({ children }: { children: ReactNode }) {
   const navigate = useCallback<Navigate>(
     (href, nextLabel = "") => {
       const url = new URL(href, window.location.href);
-      if (url.pathname === window.location.pathname) {
+      // Compare routes without the base folder or a trailing slash.
+      const route = (p: string) => p.replace(/\/+$/, "") || "/";
+      const here = window.location.pathname.startsWith(basePath)
+        ? window.location.pathname.slice(basePath.length)
+        : window.location.pathname;
+      if (route(url.pathname) === route(here || "/")) {
         // The mobile menu pauses scrolling while open; make sure it is running.
         lenis?.start();
         document.documentElement.style.overflow = "";

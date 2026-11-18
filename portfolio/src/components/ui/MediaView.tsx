@@ -4,6 +4,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from "motion/react"
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { Media } from "@/content/projects";
+import { asset } from "@/lib/asset";
 
 /** Stand-in frame for media that has not been supplied yet. */
 function Pending({ note }: { note: string }) {
@@ -58,7 +59,7 @@ function AutoVideo({ src, alt }: { src: string; alt: string }) {
   return (
     <video
       ref={ref}
-      src={src}
+      src={asset(src)}
       aria-label={alt}
       className="absolute inset-0 h-full w-full object-cover"
       muted
@@ -113,7 +114,7 @@ function YouTube({
 
   return (
     <>
-      <Image src={poster} alt={playable ? "" : alt} fill sizes={sizes} priority={priority} className="object-cover" />
+      <Image src={asset(poster)} alt={playable ? "" : alt} fill sizes={sizes} priority={priority} className="object-cover" />
       {playable ? (
         <button
           type="button"
@@ -163,7 +164,7 @@ export function MediaView({ media, sizes, ratio, priority, parallax = true, play
       <motion.div className="absolute inset-0" style={moving ? { y, scale: 1.14 } : undefined}>
         {media.type === "image" && (
           <Image
-            src={media.src}
+            src={asset(media.src)}
             alt={media.alt}
             fill
             sizes={sizes}
