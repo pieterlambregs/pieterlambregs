@@ -54,6 +54,18 @@ JS: `EASE_OUT`, `EASE_IN_OUT` from `src/lib/motion.ts`.
 - `EASE_OUT` for anything arriving: reveals, hovers, list items.
 - `EASE_IN_OUT` for wipes: page transition, mobile menu, nav hide.
 - Every motion component checks `useReducedMotion()` and rests when it is set.
+- GSAP (`src/lib/gsap.ts`) owns pinned, scrubbed scroll scenes; Motion owns
+  everything else. ScrollTrigger is kept in sync with Lenis in `Providers.tsx`.
+
+### Case scene (home, `sections/Work.tsx`)
+
+On screens 1024px and wider with motion allowed (the `scene` CSS variant and
+`SCENE_QUERY`), the cases pin and slide horizontally as the visitor scrolls:
+one linear timeline moves the strip 1:1 with scroll and fills the progress
+rule, a counter shows the current case, and each image drifts ±5% against
+the strip. Panel widths follow the viewport height so all images share one
+height. Below 1024px or with reduced motion (`noscene` variant) the cases
+stack on the asymmetric 12-column grid instead.
 
 ## Components
 

@@ -16,6 +16,7 @@ import {
   type ReactNode,
 } from "react";
 import { EASE_IN_OUT } from "@/lib/motion";
+import { ScrollTrigger } from "@/lib/gsap";
 
 /* ------------------------------------------------------------------ theme */
 
@@ -154,6 +155,18 @@ function TransitionLayer({ children }: { children: ReactNode }) {
   );
 }
 
+/* ------------------------------------------------------- gsap scroll sync */
+
+/** Keeps GSAP ScrollTrigger in step with Lenis smooth scrolling. */
+function ScrollSync() {
+  useLenis(() => ScrollTrigger.update());
+  // Webfonts change line heights; re-measure trigger positions once they land.
+  useEffect(() => {
+    document.fonts?.ready.then(() => ScrollTrigger.refresh());
+  }, []);
+  return null;
+}
+
 /* ----------------------------------------------------------------- root */
 
 export function Providers({ children }: { children: ReactNode }) {
@@ -171,6 +184,7 @@ export function Providers({ children }: { children: ReactNode }) {
   if (reduced) return tree;
   return (
     <ReactLenis root options={options}>
+      <ScrollSync />
       {tree}
     </ReactLenis>
   );

@@ -12,12 +12,15 @@ export function ProjectCard({
   shape = project.cardShape,
   priority,
   compact,
+  scene,
 }: {
   project: Project;
   sizes: string;
   shape?: keyof typeof ratios;
   priority?: boolean;
   compact?: boolean;
+  /** Inside the pinned horizontal case scene: smaller type on wide screens. */
+  scene?: boolean;
 }) {
   return (
     <article>
@@ -27,7 +30,7 @@ export function ProjectCard({
         data-cursor="View case"
         className="group block"
       >
-        <div className="overflow-hidden">
+        <div className={`overflow-hidden ${scene ? "scene-media" : ""}`}>
           <MediaView
             media={project.cover}
             sizes={sizes}
@@ -40,13 +43,15 @@ export function ProjectCard({
           <p className="label shrink-0 tabular-nums text-muted">{project.year}</p>
         </div>
         <h3
-          className={`display mt-3 ${compact ? "text-[clamp(1.75rem,3.4vw,3.25rem)]" : "text-[clamp(2.25rem,5.6vw,6rem)]"}`}
+          className={`display mt-3 ${compact ? "text-[clamp(1.75rem,3.4vw,3.25rem)]" : "text-[clamp(2.25rem,5.6vw,6rem)]"} ${scene ? "scene:text-[clamp(2rem,3.6vw,4rem)]" : ""}`}
         >
           <span className="link-draw pb-[0.06em]">{project.title}</span>
         </h3>
         <p className="label mt-3 text-muted">{project.discipline}</p>
         {!compact && (
-          <p className="mt-3 max-w-[52ch] text-small text-muted">{project.summary}</p>
+          <p className={`mt-3 max-w-[52ch] text-small text-muted ${scene ? "scene:max-w-[44ch]" : ""}`}>
+            {project.summary}
+          </p>
         )}
       </TransitionLink>
     </article>

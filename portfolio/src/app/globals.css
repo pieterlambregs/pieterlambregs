@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* The pinned horizontal case scene runs on wide screens with motion allowed
+   (SCENE_QUERY in src/lib/gsap.ts); everywhere else the cases stack. */
+@custom-variant scene (@media (min-width: 1024px) and (prefers-reduced-motion: no-preference));
+@custom-variant noscene (@media not all and (min-width: 1024px) and (prefers-reduced-motion: no-preference));
+
 /* ---------------------------------------------------------------------------
    Tokens. Dark is the default; `data-theme="light"` on <html> swaps it.
    `.tone-flip` inverts whichever theme is active, for the light (or dark)
